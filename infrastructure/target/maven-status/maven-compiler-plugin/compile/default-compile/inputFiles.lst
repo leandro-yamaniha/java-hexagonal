@@ -1,8 +1,0 @@
-/Volumes/Dock/ai/ide/windsurf/restaurant-management/infrastructure/src/main/java/com/restaurant/infrastructure/cache/RedisCacheService.java
-/Volumes/Dock/ai/ide/windsurf/restaurant-management/infrastructure/src/main/java/com/restaurant/infrastructure/persistence/entity/CustomerEntity.java
-/Volumes/Dock/ai/ide/windsurf/restaurant-management/infrastructure/src/main/java/com/restaurant/infrastructure/persistence/entity/MenuCategoryEntity.java
-/Volumes/Dock/ai/ide/windsurf/restaurant-management/infrastructure/src/main/java/com/restaurant/infrastructure/persistence/entity/MenuItemEntity.java
-/Volumes/Dock/ai/ide/windsurf/restaurant-management/infrastructure/src/main/java/com/restaurant/infrastructure/persistence/mapper/CustomerMapper.java
-/Volumes/Dock/ai/ide/windsurf/restaurant-management/infrastructure/src/main/java/com/restaurant/infrastructure/persistence/mapper/MenuItemMapper.java
-/Volumes/Dock/ai/ide/windsurf/restaurant-management/infrastructure/src/main/java/com/restaurant/infrastructure/persistence/repository/JpaCustomerRepository.java
-/Volumes/Dock/ai/ide/windsurf/restaurant-management/infrastructure/src/main/java/com/restaurant/infrastructure/persistence/repository/JpaMenuItemRepository.java

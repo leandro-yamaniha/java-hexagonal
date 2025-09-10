@@ -1,0 +1,61 @@
+# =========================
+# Global ignores
+# =========================
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# Temporary / backups
+*.swp
+*.swo
+*.tmp
+*.temp
+*.cache
+
+# =========================
+# Java / Maven / Spring / Quarkus
+# =========================
+**/target/
+**/out/
+**/build/
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# Quarkus dev artifacts (safe to ignore if created)
+.quarkus/
+
+# =========================
+# Node / Angular
+# =========================
+**/node_modules/
+**/dist/
+**/.angular/cache/
+**/coverage/
+
+# =========================
+# Docker & Local env files
+# =========================
+*.env
+*.env.local
+.env
+.env.*
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# Exceptions (keep wrapper jar if present)
+# =========================
+!**/.mvn/wrapper/maven-wrapper.jar
