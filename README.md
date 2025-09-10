@@ -16,6 +16,93 @@ restaurant-management/
 └── docker/                   # 🐳 Docker configurations
 ```
 
+## 🛠️ Troubleshooting
+
+### Quarkus – EntityManager não injeta (Unsatisfied dependency)
+Se você vir erros como "Unsatisfied dependency for type jakarta.persistence.EntityManager" ao subir o Quarkus:
+
+1. __Dependência do ORM__ (arquivo `quarkus-app/pom.xml`):
+   - Garanta que a dependência abaixo esteja presente:
+     ```xml
+     <dependency>
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-hibernate-orm</artifactId>
+     </dependency>
+     ```
+
+2. __Pacotes de entidades JPA__ (arquivo `quarkus-app/src/main/resources/application.properties`):
+   - Informe o pacote onde estão as entidades JPA para o Quarkus montar a Persistence Unit e disponibilizar o `EntityManager`:
+     ```properties
+     quarkus.hibernate-orm.packages=com.restaurant.infrastructure.persistence.entity
+     ```
+
+3. __Injeção do EntityManager__ (arquivo `quarkus-app/src/main/java/com/restaurant/quarkus/config/ApplicationConfig.java`):
+   - Utilize injeção nativa do Quarkus e consuma o `EntityManager` nos producers dos repositórios:
+     ```java
+     @ApplicationScoped
+     public class ApplicationConfig {
+       @Inject
+       EntityManager entityManager;
+
+       @Produces @Singleton
+       public CustomerRepository customerRepository() {
+         return new JpaCustomerRepository(entityManager);
+       }
+
+       @Produces @Singleton
+       public MenuItemRepository menuItemRepository() {
+         return new JpaMenuItemRepository(entityManager);
+       }
+     }
+     ```
+
+4. __Reiniciar o dev mode do Quarkus__ (caso veja "Error restarting Quarkus"):
+   - Pare processos ativos e suba novamente:
+     ```bash
+     # Em outro terminal:
+     pkill -f "quarkus:dev" || true
+     
+     # No diretório quarkus-app
+     mvn clean compile
+     mvn quarkus:dev -Dquarkus.http.port=8081
+     ```
+
+5. __Verificar MySQL__:
+   - Confirme que as credenciais e a URL batem com o `application.properties`:
+     ```properties
+     quarkus.datasource.jdbc.url=jdbc:mysql://localhost:3306/restaurant_db
+     quarkus.datasource.username=restaurant_user
+     quarkus.datasource.password=restaurant_password
+     ```
+
+6. __Validar endpoints__:
+   - Teste:
+     ```bash
+     curl -i http://localhost:8081/api/v1/customers
+     ```
+
+### Live Reload do Quarkus quebrou (página de erro 500 de reinício)
+- Às vezes o hot reload entra em estado inconsistente. Faça um restart limpo conforme o passo 4 acima.
+
+## 🧹 Git & Hygiene
+
+- __Ignore arquivos de build__ (adicione um `.gitignore` na raiz):
+  ```gitignore
+  **/target/
+  node_modules/
+  .venv/
+  .idea/
+  .DS_Store
+  ```
+
+- __Se artefatos de build já estiverem versionados__, remova do índice mantendo no disco:
+  ```bash
+  git rm -r --cached **/target
+  git commit -m "chore: stop tracking build artifacts"
+  ```
+
+ 
+
 ### Architecture Principles
 - **Framework Independence**: Core modules (`domain`, `application`, `infrastructure`) use only standard Java conventions
 - **Dependency Inversion**: Business logic doesn't depend on frameworks or external libraries
@@ -96,7 +183,7 @@ cd quarkus-app
 mvn quarkus:dev
 ```
 - **URL**: http://localhost:8081
-- **Status**: ✅ Fully functional
+- **Status**: ✅ Running (requer MySQL ativo e configuração JPA abaixo)
 - **Features**: JAX-RS, JPA, MySQL, Redis cache, CDI
 
 ## 📚 API Documentation
