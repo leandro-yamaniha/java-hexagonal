@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: restaurant-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: restaurant_db
+      MYSQL_USER: restaurant_user
+      MYSQL_PASSWORD: restaurant_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - restaurant-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: restaurant-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - restaurant-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      retries: 5
+
+  quarkus-app:
+    build:
+      context: ../quarkus-app
+      dockerfile: Dockerfile
+    container_name: restaurant-quarkus
+    ports:
+      - "8080:8080"
+    environment:
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:mysql://mysql:3306/restaurant_db
+      - QUARKUS_DATASOURCE_USERNAME=restaurant_user
+      - QUARKUS_DATASOURCE_PASSWORD=restaurant_password
+      - QUARKUS_REDIS_HOSTS=redis://redis:6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - restaurant-network
+
+  spring-boot-app:
+    build:
+      context: ../spring-boot-app
+      dockerfile: Dockerfile
+    container_name: restaurant-spring-boot
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/restaurant_db
+      - SPRING_DATASOURCE_USERNAME=restaurant_user
+      - SPRING_DATASOURCE_PASSWORD=restaurant_password
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - restaurant-network
+
+  angular-frontend:
+    build:
+      context: ../frontend-angular
+      dockerfile: Dockerfile
+    container_name: restaurant-angular
+    ports:
+      - "4200:80"
+    depends_on:
+      - quarkus-app
+      - spring-boot-app
+    networks:
+      - restaurant-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  restaurant-network:
+    driver: bridge

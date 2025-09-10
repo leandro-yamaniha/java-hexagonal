@@ -1,0 +1,9 @@
+com/restaurant/domain/valueobject/MenuCategory.class
+com/restaurant/domain/valueobject/TableStatus.class
+com/restaurant/domain/entity/Customer.class
+com/restaurant/domain/entity/OrderItem.class
+com/restaurant/domain/valueobject/OrderStatus.class
+com/restaurant/domain/entity/Order.class
+com/restaurant/domain/entity/RestaurantTable.class
+com/restaurant/domain/entity/MenuItem.class
+com/restaurant/domain/valueobject/Money.class

@@ -1,0 +1,272 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '@angular/material/theming';
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$restaurant-primary: mat-palette($mat-indigo);
+$restaurant-accent: mat-palette($mat-pink, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$restaurant-warn: mat-palette($mat-red);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$restaurant-theme: mat-light-theme((
+  color: (
+    primary: $restaurant-primary,
+    accent: $restaurant-accent,
+    warn: $restaurant-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($restaurant-theme);
+
+/* Global Styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #fafafa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Custom Material Design overrides */
+.mat-toolbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mat-card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+.mat-raised-button {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.mat-raised-button:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.flex-spacer {
+  flex: 1 1 auto;
+}
+
+.margin-bottom-16 {
+  margin-bottom: 16px;
+}
+
+.margin-bottom-20 {
+  margin-bottom: 20px;
+}
+
+.padding-16 {
+  padding: 16px;
+}
+
+.padding-20 {
+  padding: 20px;
+}
+
+/* Loading States */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Error States */
+.error-message {
+  color: #f44336;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* Success States */
+.success-message {
+  color: #4caf50;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* Table Styles */
+.mat-table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mat-header-cell {
+  font-weight: 600;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+.mat-row:hover {
+  background-color: #f9f9f9;
+}
+
+/* Form Styles */
+.mat-form-field {
+  margin-bottom: 16px;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(0,0,0,0.12);
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #3f51b5;
+}
+
+/* Dialog Styles */
+.mat-dialog-container {
+  border-radius: 8px;
+  padding: 0;
+}
+
+.mat-dialog-title {
+  margin: 0;
+  padding: 24px 24px 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.mat-dialog-content {
+  padding: 20px 24px;
+  margin: 0;
+}
+
+.mat-dialog-actions {
+  padding: 8px 24px 24px;
+  margin: 0;
+  justify-content: flex-end;
+}
+
+/* Chip Styles */
+.mat-chip {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mat-toolbar {
+    padding: 0 8px;
+  }
+  
+  .mat-toolbar-row {
+    height: 56px;
+  }
+  
+  .mat-dialog-container {
+    margin: 16px;
+    max-width: calc(100vw - 32px);
+  }
+  
+  .mat-table {
+    font-size: 14px;
+  }
+  
+  .mat-header-cell,
+  .mat-cell {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mat-dialog-title {
+    font-size: 18px;
+    padding: 16px 16px 0;
+  }
+  
+  .mat-dialog-content {
+    padding: 16px;
+  }
+  
+  .mat-dialog-actions {
+    padding: 8px 16px 16px;
+  }
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

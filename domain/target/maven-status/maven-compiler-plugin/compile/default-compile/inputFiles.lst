@@ -1,0 +1,9 @@
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/entity/Customer.java
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/entity/MenuItem.java
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/entity/Order.java
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/entity/OrderItem.java
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/entity/RestaurantTable.java
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/valueobject/MenuCategory.java
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/valueobject/Money.java
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/valueobject/OrderStatus.java
+/Volumes/Dock/ai/ide/windsurf/restaurant-management/domain/src/main/java/com/restaurant/domain/valueobject/TableStatus.java
