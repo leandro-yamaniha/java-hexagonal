@@ -13,7 +13,6 @@ import redis.clients.jedis.resps.ScanResult;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**

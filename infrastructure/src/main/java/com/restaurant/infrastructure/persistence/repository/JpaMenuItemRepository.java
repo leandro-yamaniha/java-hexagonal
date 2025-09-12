@@ -7,7 +7,6 @@ import com.restaurant.infrastructure.persistence.entity.MenuCategoryEntity;
 import com.restaurant.infrastructure.persistence.entity.MenuItemEntity;
 import com.restaurant.infrastructure.persistence.mapper.MenuItemMapper;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 

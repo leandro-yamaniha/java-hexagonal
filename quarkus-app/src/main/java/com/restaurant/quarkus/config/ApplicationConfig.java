@@ -2,25 +2,19 @@ package com.restaurant.quarkus.config;
 
 import com.restaurant.application.port.in.CustomerUseCase;
 import com.restaurant.application.port.in.MenuUseCase;
-import com.restaurant.application.port.in.OrderUseCase;
-import com.restaurant.application.port.in.TableUseCase;
 import com.restaurant.application.port.out.CacheService;
 import com.restaurant.application.port.out.CustomerRepository;
 import com.restaurant.application.port.out.MenuItemRepository;
-import com.restaurant.application.port.out.OrderRepository;
-import com.restaurant.application.port.out.TableRepository;
 import com.restaurant.application.service.CustomerService;
 import com.restaurant.application.service.MenuService;
 import com.restaurant.infrastructure.cache.RedisCacheService;
 import com.restaurant.infrastructure.persistence.repository.JpaCustomerRepository;
 import com.restaurant.infrastructure.persistence.repository.JpaMenuItemRepository;
-import io.quarkus.redis.datasource.RedisDataSource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 

@@ -6,8 +6,6 @@ import com.restaurant.domain.valueobject.Money;
 import com.restaurant.infrastructure.persistence.entity.MenuCategoryEntity;
 import com.restaurant.infrastructure.persistence.entity.MenuItemEntity;
 
-import java.util.Currency;
-
 /**
  * Mapper between MenuItem domain entity and MenuItemEntity JPA entity
  */
