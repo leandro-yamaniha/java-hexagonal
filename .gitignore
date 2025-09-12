@@ -59,3 +59,6 @@ logs/
 # Exceptions (keep wrapper jar if present)
 # =========================
 !**/.mvn/wrapper/maven-wrapper.jar
+*.java
+*.class
+*.jar
