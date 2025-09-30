@@ -1,6 +1,5 @@
 package com.restaurant.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.restaurant.domain.valueobject.TableStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -33,13 +32,10 @@ public class RestaurantTable {
     
     private UUID currentOrderId;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime lastOccupiedAt;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
     // Constructors

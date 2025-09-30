@@ -4,6 +4,8 @@ import com.restaurant.application.port.in.MenuUseCase;
 import com.restaurant.domain.entity.MenuItem;
 import com.restaurant.domain.valueobject.MenuCategory;
 import com.restaurant.domain.valueobject.Money;
+import com.restaurant.springboot.dto.MenuItemDTO;
+import com.restaurant.springboot.mapper.MenuItemDTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Spring Boot REST controller for menu item operations
@@ -29,6 +32,9 @@ public class MenuItemController {
     
     @Autowired
     private MenuUseCase menuUseCase;
+    
+    @Autowired
+    private MenuItemDTOMapper menuItemMapper;
     
     @PostMapping
     @Operation(summary = "Create a new menu item")
@@ -45,7 +51,8 @@ public class MenuItemController {
                 request.preparationTimeMinutes()
             );
             MenuItem menuItem = menuUseCase.createMenuItem(command);
-            return ResponseEntity.status(HttpStatus.CREATED).body(menuItem);
+            MenuItemDTO dto = menuItemMapper.toDTO(menuItem);
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
@@ -54,11 +61,14 @@ public class MenuItemController {
     @GetMapping
     @Operation(summary = "Get all menu items")
     @ApiResponse(responseCode = "200", description = "List of menu items")
-    public ResponseEntity<List<MenuItem>> getAllMenuItems(
+    public ResponseEntity<List<MenuItemDTO>> getAllMenuItems(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         List<MenuItem> menuItems = menuUseCase.getAllMenuItems();
-        return ResponseEntity.ok(menuItems);
+        List<MenuItemDTO> dtos = menuItems.stream()
+            .map(menuItemMapper::toDTO)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
     
     @GetMapping("/{id}")
@@ -68,7 +78,7 @@ public class MenuItemController {
     public ResponseEntity<?> getMenuItemById(
             @Parameter(description = "Menu item ID") @PathVariable UUID id) {
         Optional<MenuItem> menuItem = menuUseCase.findMenuItemById(id);
-        return menuItem.map(item -> ResponseEntity.ok(item))
+        return menuItem.map(item -> ResponseEntity.ok(menuItemMapper.toDTO(item)))
             .orElse(ResponseEntity.notFound().build());
     }
     
@@ -79,7 +89,10 @@ public class MenuItemController {
         try {
             MenuCategory menuCategory = MenuCategory.valueOf(category.toUpperCase());
             List<MenuItem> menuItems = menuUseCase.getMenuItemsByCategory(menuCategory);
-            return ResponseEntity.ok(menuItems);
+            List<MenuItemDTO> dtos = menuItems.stream()
+                .map(menuItemMapper::toDTO)
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(dtos);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Invalid category: " + category));
         }
@@ -88,9 +101,12 @@ public class MenuItemController {
     @GetMapping("/available")
     @Operation(summary = "Get available menu items")
     @ApiResponse(responseCode = "200", description = "List of available menu items")
-    public ResponseEntity<List<MenuItem>> getAvailableMenuItems() {
+    public ResponseEntity<List<MenuItemDTO>> getAvailableMenuItems() {
         List<MenuItem> menuItems = menuUseCase.getAvailableMenuItems();
-        return ResponseEntity.ok(menuItems);
+        List<MenuItemDTO> dtos = menuItems.stream()
+            .map(menuItemMapper::toDTO)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
     
     @GetMapping("/search")
@@ -101,7 +117,10 @@ public class MenuItemController {
             return ResponseEntity.badRequest().body(new ErrorResponse("Name parameter is required"));
         }
         List<MenuItem> menuItems = menuUseCase.searchMenuItemsByName(name.trim());
-        return ResponseEntity.ok(menuItems);
+        List<MenuItemDTO> dtos = menuItems.stream()
+            .map(menuItemMapper::toDTO)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
     
     @PutMapping("/{id}")
@@ -123,7 +142,8 @@ public class MenuItemController {
                 request.available()
             );
             MenuItem menuItem = menuUseCase.updateMenuItem(command);
-            return ResponseEntity.ok(menuItem);
+            MenuItemDTO dto = menuItemMapper.toDTO(menuItem);
+            return ResponseEntity.ok(dto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }

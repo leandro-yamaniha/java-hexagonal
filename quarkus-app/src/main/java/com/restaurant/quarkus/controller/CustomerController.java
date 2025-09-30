@@ -2,6 +2,8 @@ package com.restaurant.quarkus.controller;
 
 import com.restaurant.application.port.in.CustomerUseCase;
 import com.restaurant.domain.entity.Customer;
+import com.restaurant.quarkus.dto.CustomerDTO;
+import com.restaurant.quarkus.mapper.CustomerDTOMapper;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -15,6 +17,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for customer operations
@@ -28,6 +31,9 @@ public class CustomerController {
     @Inject
     CustomerUseCase customerUseCase;
     
+    @Inject
+    CustomerDTOMapper customerMapper;
+    
     @POST
     @Operation(summary = "Create a new customer")
     @APIResponse(responseCode = "201", description = "Customer created successfully")
@@ -38,7 +44,8 @@ public class CustomerController {
                 request.name(), request.email(), request.phone(), request.address()
             );
             Customer customer = customerUseCase.createCustomer(command);
-            return Response.status(Response.Status.CREATED).entity(customer).build();
+            CustomerDTO dto = customerMapper.toDTO(customer);
+            return Response.status(Response.Status.CREATED).entity(dto).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                 .entity(new ErrorResponse(e.getMessage())).build();
@@ -52,7 +59,10 @@ public class CustomerController {
         List<Customer> customers = activeOnly ? 
             customerUseCase.getAllActiveCustomers() : 
             customerUseCase.getAllActiveCustomers(); // For now, always return active
-        return Response.ok(customers).build();
+        List<CustomerDTO> dtos = customers.stream()
+            .map(customerMapper::toDTO)
+            .collect(Collectors.toList());
+        return Response.ok(dtos).build();
     }
     
     @GET
@@ -62,7 +72,7 @@ public class CustomerController {
     @APIResponse(responseCode = "404", description = "Customer not found")
     public Response getCustomerById(@Parameter(description = "Customer ID") @PathParam("id") UUID customerId) {
         Optional<Customer> customer = customerUseCase.findCustomerById(customerId);
-        return customer.map(c -> Response.ok(c).build())
+        return customer.map(c -> Response.ok(customerMapper.toDTO(c)).build())
             .orElse(Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponse("Customer not found")).build());
     }
@@ -74,7 +84,7 @@ public class CustomerController {
     @APIResponse(responseCode = "404", description = "Customer not found")
     public Response getCustomerByEmail(@Parameter(description = "Customer email") @PathParam("email") String email) {
         Optional<Customer> customer = customerUseCase.findCustomerByEmail(email);
-        return customer.map(c -> Response.ok(c).build())
+        return customer.map(c -> Response.ok(customerMapper.toDTO(c)).build())
             .orElse(Response.status(Response.Status.NOT_FOUND)
                 .entity(new ErrorResponse("Customer not found")).build());
     }
@@ -89,7 +99,10 @@ public class CustomerController {
                 .entity(new ErrorResponse("Name parameter is required")).build();
         }
         List<Customer> customers = customerUseCase.searchCustomersByName(name.trim());
-        return Response.ok(customers).build();
+        List<CustomerDTO> dtos = customers.stream()
+            .map(customerMapper::toDTO)
+            .collect(Collectors.toList());
+        return Response.ok(dtos).build();
     }
     
     @PUT

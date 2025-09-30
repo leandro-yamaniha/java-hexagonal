@@ -1,7 +1,5 @@
 package com.restaurant.domain.valueobject;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
@@ -22,9 +20,7 @@ public class Money {
     @NotNull(message = "Currency is required")
     private final Currency currency;
     
-    @JsonCreator
-    public Money(@JsonProperty("amount") BigDecimal amount, 
-                 @JsonProperty("currency") String currencyCode) {
+    public Money(BigDecimal amount, String currencyCode) {
         this.amount = amount != null ? amount.setScale(2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
         this.currency = Currency.getInstance(currencyCode != null ? currencyCode : "USD");
     }

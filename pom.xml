@@ -32,6 +32,7 @@
         <junit.version>5.10.1</junit.version>
         <testcontainers.version>1.19.3</testcontainers.version>
         <mockito.version>5.8.0</mockito.version>
+        <archunit.version>1.2.1</archunit.version>
         
         <!-- Utility versions -->
         <jackson.version>2.16.1</jackson.version>
@@ -45,6 +46,7 @@
         <module>domain</module>
         <module>application</module>
         <module>infrastructure</module>
+        <module>architecture-tests</module>
         <module>quarkus-app</module>
         <module>spring-boot-app</module>
     </modules>
@@ -159,6 +161,14 @@
                 <version>${testcontainers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            
+            <!-- Architecture Testing -->
+            <dependency>
+                <groupId>com.tngtech.archunit</groupId>
+                <artifactId>archunit-junit5</artifactId>
+                <version>${archunit.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

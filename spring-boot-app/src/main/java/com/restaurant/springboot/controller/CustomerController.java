@@ -2,6 +2,8 @@ package com.restaurant.springboot.controller;
 
 import com.restaurant.application.port.in.CustomerUseCase;
 import com.restaurant.domain.entity.Customer;
+import com.restaurant.springboot.dto.CustomerDTO;
+import com.restaurant.springboot.mapper.CustomerDTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Spring Boot REST controller for customer operations
@@ -27,6 +30,9 @@ public class CustomerController {
     @Autowired
     private CustomerUseCase customerUseCase;
     
+    @Autowired
+    private CustomerDTOMapper customerMapper;
+    
     @PostMapping
     @Operation(summary = "Create a new customer")
     @ApiResponse(responseCode = "201", description = "Customer created successfully")
@@ -37,7 +43,8 @@ public class CustomerController {
                 request.name(), request.email(), request.phone(), request.address()
             );
             Customer customer = customerUseCase.createCustomer(command);
-            return ResponseEntity.status(HttpStatus.CREATED).body(customer);
+            CustomerDTO dto = customerMapper.toDTO(customer);
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
@@ -46,12 +53,15 @@ public class CustomerController {
     @GetMapping
     @Operation(summary = "Get all customers")
     @ApiResponse(responseCode = "200", description = "List of customers")
-    public ResponseEntity<List<Customer>> getAllCustomers(
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers(
             @RequestParam(defaultValue = "true") boolean active) {
         List<Customer> customers = active ? 
             customerUseCase.getAllActiveCustomers() : 
             customerUseCase.getAllActiveCustomers(); // For now, always return active
-        return ResponseEntity.ok(customers);
+        List<CustomerDTO> dtos = customers.stream()
+            .map(customerMapper::toDTO)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
     
     @GetMapping("/{id}")
@@ -61,7 +71,7 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerById(
             @Parameter(description = "Customer ID") @PathVariable UUID id) {
         Optional<Customer> customer = customerUseCase.findCustomerById(id);
-        return customer.map(c -> ResponseEntity.ok(c))
+        return customer.map(c -> ResponseEntity.ok(customerMapper.toDTO(c)))
             .orElse(ResponseEntity.notFound().build());
     }
     
@@ -72,7 +82,7 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerByEmail(
             @Parameter(description = "Customer email") @PathVariable String email) {
         Optional<Customer> customer = customerUseCase.findCustomerByEmail(email);
-        return customer.map(c -> ResponseEntity.ok(c))
+        return customer.map(c -> ResponseEntity.ok(customerMapper.toDTO(c)))
             .orElse(ResponseEntity.notFound().build());
     }
     
@@ -84,7 +94,10 @@ public class CustomerController {
             return ResponseEntity.badRequest().body(new ErrorResponse("Name parameter is required"));
         }
         List<Customer> customers = customerUseCase.searchCustomersByName(name.trim());
-        return ResponseEntity.ok(customers);
+        List<CustomerDTO> dtos = customers.stream()
+            .map(customerMapper::toDTO)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
     
     @PutMapping("/{id}")
@@ -99,7 +112,8 @@ public class CustomerController {
                 id, request.name(), request.email(), request.phone(), request.address()
             );
             Customer customer = customerUseCase.updateCustomer(command);
-            return ResponseEntity.ok(customer);
+            CustomerDTO dto = customerMapper.toDTO(customer);
+            return ResponseEntity.ok(dto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }

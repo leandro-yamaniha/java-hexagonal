@@ -1,6 +1,5 @@
 package com.restaurant.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.restaurant.domain.valueobject.Money;
 import com.restaurant.domain.valueobject.OrderStatus;
 import jakarta.validation.Valid;
@@ -38,19 +37,14 @@ public class Order {
     @Size(max = 500, message = "Special instructions cannot exceed 500 characters")
     private String specialInstructions;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime orderTime;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime estimatedDeliveryTime;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime actualDeliveryTime;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
     // Constructors

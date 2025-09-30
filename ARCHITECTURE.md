@@ -53,6 +53,36 @@ This project implements a **pure hexagonal architecture** (also known as ports a
   - CDI dependency injection
   - Native compilation support
 
+## Visual Architecture
+
+For detailed visual diagrams with Mermaid, see **[ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md)**
+
+### DTO Pattern Implementation
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Controller
+    participant DTO
+    participant Mapper
+    participant UseCase
+    participant Domain
+    
+    Client->>Controller: HTTP Request (JSON)
+    Controller->>DTO: Deserialize to DTO
+    DTO->>Mapper: toCommand()
+    Mapper->>UseCase: execute(command)
+    UseCase->>Domain: Business Logic
+    Domain-->>UseCase: Domain Entity
+    UseCase-->>Mapper: Domain Entity
+    Mapper->>DTO: toDTO(entity)
+    DTO-->>Controller: CustomerDTO
+    Controller-->>Client: HTTP Response (JSON)
+    
+    Note over DTO: Jackson Annotations<br/>Validation<br/>Serialization
+    Note over Domain: Pure Java<br/>No Frameworks<br/>Business Rules
+```
+
 ## Dependency Flow
 
 ```
@@ -97,6 +127,7 @@ This project implements a **pure hexagonal architecture** (also known as ports a
 - Shared infrastructure implementations
 
 ### 4. Clean Module Boundaries
+
 ```xml
 <!-- Root POM: Framework neutral -->
 <parent>
@@ -116,9 +147,11 @@ This project implements a **pure hexagonal architecture** (also known as ports a
 </parent>
 ```
 
+
 ## Configuration Patterns
 
 ### Spring Boot Configuration
+
 ```java
 @Configuration
 public class ApplicationConfig {
@@ -136,6 +169,7 @@ public class ApplicationConfig {
 ```
 
 ### Repository Implementation (Framework Independent)
+
 ```java
 public class JpaCustomerRepository implements CustomerRepository {
     
@@ -162,6 +196,50 @@ public class JpaCustomerRepository implements CustomerRepository {
 5. **Performance**: Can optimize different implementations for different needs
 
 ## Testing Strategy
+
+### 🧪 Architecture Tests (`architecture-tests/`)
+
+Automated verification of architectural rules using **ArchUnit**:
+
+- **Hexagonal Architecture Compliance**: Verifies layer dependencies and isolation
+- **Naming Conventions**: Ensures consistent naming patterns across the codebase
+- **Ports and Adapters**: Validates correct implementation of the pattern
+- **Layer Purity**: Ensures each layer only uses appropriate dependencies
+
+#### Key Architecture Rules Enforced
+
+```java
+// Domain layer must be pure (no framework dependencies)
+@Test
+void domainLayerShouldNotDependOnAnyOtherLayer() {
+    noClasses()
+        .that().resideInAPackage("..domain..")
+        .should().dependOnClassesThat()
+        .resideInAnyPackage("..application..", "..infrastructure..");
+}
+
+// Application layer should only depend on domain
+@Test
+void applicationLayerShouldOnlyDependOnDomainLayer() {
+    noClasses()
+        .that().resideInAPackage("..application..")
+        .should().dependOnClassesThat()
+        .resideInAnyPackage("..infrastructure..");
+}
+```
+
+#### Running Architecture Tests
+
+```bash
+# Run all architecture tests
+mvn test -pl architecture-tests
+
+# Run specific test class
+mvn test -pl architecture-tests -Dtest=HexagonalArchitectureTest
+```
+
+
+### 📋 Other Testing Levels
 
 - **Unit Tests**: Test domain logic in isolation
 - **Integration Tests**: Test use cases with in-memory implementations

@@ -1,6 +1,5 @@
 package com.restaurant.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.restaurant.domain.valueobject.MenuCategory;
 import com.restaurant.domain.valueobject.Money;
 import jakarta.validation.Valid;
@@ -39,10 +38,8 @@ public class MenuItem {
     
     private int preparationTimeMinutes;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
     // Constructors

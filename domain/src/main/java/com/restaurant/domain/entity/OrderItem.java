@@ -1,5 +1,6 @@
 package com.restaurant.domain.entity;
 
+
 import com.restaurant.domain.valueobject.Money;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

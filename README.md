@@ -2,6 +2,8 @@
 
 A comprehensive restaurant management system built with **hexagonal architecture** (ports and adapters pattern), supporting both Quarkus and Spring Boot frameworks with complete framework independence in core modules.
 
+> 📋 **Quick Start**: See [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) for a complete overview of the project.
+
 ## 🏗️ Architecture
 
 This project implements a **pure hexagonal architecture** with strict separation of concerns:
@@ -13,8 +15,31 @@ restaurant-management/
 ├── infrastructure/            # 🟡 External adapters (JPA, Redis, pure implementations)
 ├── quarkus-app/              # 🟢 Quarkus REST API implementation
 ├── spring-boot-app/          # 🟢 Spring Boot REST API implementation (WORKING ✅)
+├── architecture-tests/        # 🧪 ArchUnit tests for architecture validation
 └── docker/                   # 🐳 Docker configurations
 ```
+
+### 📊 Visual Diagrams
+
+For detailed architecture diagrams and flow charts, see:
+- **[ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md)** - Complete visual documentation with Mermaid diagrams
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Detailed architecture documentation
+- **[ARCHITECTURE_TESTS_SUMMARY.md](./ARCHITECTURE_TESTS_SUMMARY.md)** - Architecture tests summary
+
+### 🎨 DTO Pattern
+
+This project uses the **DTO (Data Transfer Object) pattern** to keep the domain layer pure and free from serialization concerns:
+
+- **[DTO_PATTERN_GUIDE.md](./DTO_PATTERN_GUIDE.md)** - Complete guide with examples and best practices
+- **Domain Layer**: Pure Java entities without framework annotations
+- **Presentation Layer**: DTOs with Jackson annotations for JSON serialization
+- **Mappers**: Convert between Domain entities and DTOs
+
+**Benefits:**
+- ✅ Domain 100% pure (no Jackson, no framework dependencies)
+- ✅ Easy to change API format without affecting business logic
+- ✅ Better testability and maintainability
+- ✅ Validated by architecture tests (44/44 passing)
 
 ## 🛠️ Troubleshooting
 
