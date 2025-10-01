@@ -2,7 +2,7 @@
 
 ## 🎯 Visão Geral
 
-Sistema de gerenciamento de restaurante construído com **arquitetura hexagonal pura**, suportando múltiplos frameworks (Spring Boot e Quarkus) com domínio 100% independente de tecnologia.
+Sistema de gerenciamento de restaurante construído com **arquitetura hexagonal pura**, suportando múltiplos frameworks (Spring Boot, Quarkus e Micronaut) com domínio 100% independente de tecnologia.
 
 ---
 
@@ -69,25 +69,9 @@ Controller (Spring Boot)
 DTO (Jackson) ← Serialização isolada
     ↓
 Mapper
-    ↓
 Domain Entity (Pure Java) ← Sem frameworks
     ↓
 Business Logic
-```
-
-### Entidades Cobertas
-
-| Entidade | DTO | Mapper | Controller |
-|----------|-----|--------|------------|
-| Customer | ✅ | ✅ | ✅ |
-| MenuItem | ✅ | ✅ | ✅ |
-| Order | ✅ | ✅ | 📦 |
-| RestaurantTable | ✅ | ✅ | 📦 |
-
----
-
-## 🧪 Testes de Arquitetura
-
 ### Resultados
 
 ```

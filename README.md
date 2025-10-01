@@ -1,6 +1,6 @@
 # Restaurant Management System
 
-A comprehensive restaurant management system built with **hexagonal architecture** (ports and adapters pattern), supporting both Quarkus and Spring Boot frameworks with complete framework independence in core modules.
+A comprehensive restaurant management system built with **hexagonal architecture** (ports and adapters pattern), supporting **three frameworks** (Spring Boot, Quarkus, and Micronaut) with complete framework independence in core modules.
 
 > 📋 **Quick Start**: See [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) for a complete overview of the project.
 
@@ -13,11 +13,22 @@ restaurant-management/
 ├── domain/                     # 🔵 Core business logic (pure Java, no frameworks)
 ├── application/               # 🔵 Use cases and application services (pure Java)
 ├── infrastructure/            # 🟡 External adapters (JPA, Redis, pure implementations)
-├── quarkus-app/              # 🟢 Quarkus REST API implementation
-├── spring-boot-app/          # 🟢 Spring Boot REST API implementation (WORKING ✅)
-├── architecture-tests/        # 🧪 ArchUnit tests for architecture validation
-└── docker/                   # 🐳 Docker configurations
+├── spring-boot-app/          # 🟢 Spring Boot REST API (port 8082) ✅
+├── quarkus-app/              # 🟢 Quarkus REST API (port 8081) ✅
+├── micronaut-app/            # 🟢 Micronaut REST API (port 8083) ✅
+├── architecture-tests/        # 🧪 ArchUnit tests (75 tests validating architecture)
+└── docker/                   # 🐳 Docker configurations (MySQL + Redis)
 ```
+
+### 🎯 Three Frameworks, One Architecture
+
+This project demonstrates the **true power of hexagonal architecture** by supporting three different frameworks with the **same domain and business logic**:
+
+| Framework | Port | Version | DTOs | Mappers | Controllers | Status |
+|-----------|------|---------|------|---------|-------------|--------|
+| **Spring Boot** | 8082 | 3.2.1 | 4 | 4 | 2 | ✅ Active |
+| **Quarkus** | 8081 | 3.6.4 | 4 | 2 | 1 | ✅ Active |
+| **Micronaut** | 8083 | 4.2.3 | 4 | 2 | 1 | ✅ Active |
 
 ### 📊 Visual Diagrams
 
@@ -193,33 +204,100 @@ Se você vir erros como "Unsatisfied dependency for type jakarta.persistence.Ent
 
 ### Running Applications
 
-#### Spring Boot Application (✅ Working)
+You can run all three frameworks simultaneously on different ports!
+
+#### 🟢 Spring Boot Application (Port 8082)
 ```bash
+# From project root
+mvn spring-boot:run -pl spring-boot-app
+
+# Or using JAR
 cd spring-boot-app
-mvn spring-boot:run
+mvn clean package
+java -jar target/spring-boot-app-1.0.0.jar
 ```
 - **URL**: http://localhost:8082
+- **API**: http://localhost:8082/api/v1/customers
+- **Health**: http://localhost:8082/actuator/health
+- **Swagger**: http://localhost:8082/swagger-ui.html
 - **Status**: ✅ Fully functional
-- **Features**: REST API, JPA, MySQL, Redis cache
 
-#### Quarkus Application (✅ Working)
+#### 🟢 Quarkus Application (Port 8081)
 ```bash
+# From project root
+mvn quarkus:dev -pl quarkus-app
+
+# Or using JAR
 cd quarkus-app
-mvn quarkus:dev
+mvn clean package
+java -jar target/quarkus-app-runner.jar
 ```
 - **URL**: http://localhost:8081
-- **Status**: ✅ Running (requer MySQL ativo e configuração JPA abaixo)
-- **Features**: JAX-RS, JPA, MySQL, Redis cache, CDI
+- **API**: http://localhost:8081/api/v1/customers
+- **Health**: http://localhost:8081/q/health
+- **Dev UI**: http://localhost:8081/q/dev
+- **Status**: ✅ Fully functional
+
+#### 🟢 Micronaut Application (Port 8083)
+```bash
+# From project root
+mvn clean package -pl micronaut-app -DskipTests
+java -Dmicronaut.server.port=8083 -jar micronaut-app/target/micronaut-app-1.0.0.jar
+
+# Or specify port in command line
+java -jar micronaut-app/target/micronaut-app-1.0.0.jar
+```
+- **URL**: http://localhost:8083
+- **API**: http://localhost:8083/api/v1/customers
+- **Health**: http://localhost:8083/health
+- **Status**: ✅ Fully functional
+
+### 🎯 Quick Start - All Three Frameworks
+
+```bash
+# 1. Start infrastructure (MySQL + Redis)
+cd docker
+docker-compose up -d
+
+# 2. Build all modules
+cd ..
+mvn clean install -DskipTests
+
+# 3. Start Spring Boot (Terminal 1)
+mvn spring-boot:run -pl spring-boot-app
+
+# 4. Start Quarkus (Terminal 2)
+mvn quarkus:dev -pl quarkus-app
+
+# 5. Start Micronaut (Terminal 3)
+java -Dmicronaut.server.port=8083 -jar micronaut-app/target/micronaut-app-1.0.0.jar
+```
+
+### ✅ Verify All Services
+
+```bash
+# Test all endpoints
+curl http://localhost:8082/api/v1/customers  # Spring Boot
+curl http://localhost:8081/api/v1/customers  # Quarkus
+curl http://localhost:8083/api/v1/customers  # Micronaut
+
+# Check health
+curl http://localhost:8082/actuator/health   # Spring Boot
+curl http://localhost:8081/q/health          # Quarkus
+curl http://localhost:8083/health            # Micronaut
+```
 
 ## 📚 API Documentation
 
 ### OpenAPI/Swagger Documentation
-- **Spring Boot Swagger UI**: http://localhost:8082/swagger-ui.html
-- **Spring Boot OpenAPI JSON**: http://localhost:8082/v3/api-docs
-- **Quarkus Swagger UI**: http://localhost:8081/q/swagger-ui
-- **Quarkus OpenAPI JSON**: http://localhost:8081/q/openapi
 
-### Application Endpoints
+| Framework | Swagger UI | OpenAPI JSON |
+|-----------|------------|--------------|
+| **Spring Boot** | http://localhost:8082/swagger-ui.html | http://localhost:8082/v3/api-docs |
+| **Quarkus** | http://localhost:8081/q/swagger-ui | http://localhost:8081/q/openapi |
+| **Micronaut** | Not configured | Use Postman or curl |
+
+### Application Endpoints (All Frameworks)
 
 #### Spring Boot Application (Port 8082)
 - **Base URL**: http://localhost:8082
@@ -229,10 +307,17 @@ mvn quarkus:dev
 
 #### Quarkus Application (Port 8081)
 - **Base URL**: http://localhost:8081
+- **Health Check**: http://localhost:8081/q/health
 - **Customer API**: http://localhost:8081/api/v1/customers
 - **Menu API**: http://localhost:8081/api/v1/menu-items
 
-### Available Endpoints (Both Applications)
+#### Micronaut Application (Port 8083)
+- **Base URL**: http://localhost:8083
+- **Health Check**: http://localhost:8083/health
+- **Customer API**: http://localhost:8083/api/v1/customers
+- **Note**: Swagger UI not configured (use Postman or curl for testing)
+
+### Available Endpoints (All Three Frameworks)
 ```
 # Customer Management
 GET    /api/v1/customers           # List all customers

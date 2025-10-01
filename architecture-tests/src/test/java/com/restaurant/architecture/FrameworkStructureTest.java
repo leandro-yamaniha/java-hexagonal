@@ -12,9 +12,9 @@ import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.sli
 
 /**
  * Testes de arquitetura específicos para validar estrutura e convenções
- * dos módulos Spring Boot e Quarkus
+ * dos módulos Spring Boot, Quarkus e Micronaut
  */
-@DisplayName("Framework Structure Tests - Spring Boot & Quarkus Conventions")
+@DisplayName("Framework Structure Tests - Spring Boot, Quarkus & Micronaut Conventions")
 class FrameworkStructureTest {
 
     private static JavaClasses importedClasses;
@@ -27,7 +27,8 @@ class FrameworkStructureTest {
                     "com.restaurant.application",
                     "com.restaurant.infrastructure",
                     "com.restaurant.springboot",
-                    "com.restaurant.quarkus"
+                    "com.restaurant.quarkus",
+                    "com.restaurant.micronaut"
                 );
     }
 
@@ -222,15 +223,98 @@ class FrameworkStructureTest {
     }
 
     // ========================================
+    // MICRONAUT - Estrutura e Convenções
+    // ========================================
+
+    @Test
+    @DisplayName("✅ Micronaut - Controllers devem estar no pacote controller")
+    void micronautControllersShouldBeInControllerPackage() {
+        ArchRule controllerPackageRule = classes()
+                .that().resideInAPackage("..micronaut..")
+                .and().haveSimpleNameEndingWith("Controller")
+                .should().resideInAPackage("..micronaut.controller..");
+
+        controllerPackageRule.check(importedClasses);
+    }
+
+    @Test
+    @DisplayName("✅ Micronaut - DTOs devem estar no pacote dto")
+    void micronautDtosShouldBeInDtoPackage() {
+        ArchRule dtoPackageRule = classes()
+                .that().resideInAPackage("..micronaut..")
+                .and().haveSimpleNameEndingWith("DTO")
+                .should().resideInAPackage("..micronaut.dto..");
+
+        dtoPackageRule.check(importedClasses);
+    }
+
+    @Test
+    @DisplayName("✅ Micronaut - Mappers devem estar no pacote mapper")
+    void micronautMappersShouldBeInMapperPackage() {
+        ArchRule mapperPackageRule = classes()
+                .that().resideInAPackage("..micronaut..")
+                .and().haveSimpleNameEndingWith("Mapper")
+                .should().resideInAPackage("..micronaut.mapper..");
+
+        mapperPackageRule.check(importedClasses);
+    }
+
+    @Test
+    @DisplayName("✅ Micronaut - Configs devem estar no pacote config")
+    void micronautConfigsShouldBeInConfigPackage() {
+        ArchRule configPackageRule = classes()
+                .that().resideInAPackage("..micronaut..")
+                .and().haveSimpleNameEndingWith("Config")
+                .or().haveSimpleNameContaining("Configuration")
+                .should().resideInAPackage("..micronaut.config..");
+
+        configPackageRule.check(importedClasses);
+    }
+
+    @Test
+    @DisplayName("✅ Micronaut - Controllers devem usar @Controller")
+    void micronautControllersShouldUseControllerAnnotation() {
+        ArchRule controllerAnnotationRule = classes()
+                .that().resideInAPackage("..micronaut.controller..")
+                .and().haveSimpleNameEndingWith("Controller")
+                .should().beAnnotatedWith("io.micronaut.http.annotation.Controller");
+
+        controllerAnnotationRule.check(importedClasses);
+    }
+
+    @Test
+    @DisplayName("✅ Micronaut - Mappers devem usar @Singleton")
+    void micronautMappersShouldUseSingletonAnnotation() {
+        ArchRule singletonAnnotationRule = classes()
+                .that().resideInAPackage("..micronaut.mapper..")
+                .and().haveSimpleNameEndingWith("Mapper")
+                .should().beAnnotatedWith("jakarta.inject.Singleton");
+
+        singletonAnnotationRule.check(importedClasses);
+    }
+
+    @Test
+    @DisplayName("✅ Micronaut - DTOs devem ter validações Jakarta")
+    void micronautDtosShouldUseJakartaValidation() {
+        ArchRule validationRule = classes()
+                .that().resideInAPackage("..micronaut.dto..")
+                .and().haveSimpleNameEndingWith("DTO")
+                .should().dependOnClassesThat()
+                .resideInAnyPackage("jakarta.validation..", "com.fasterxml.jackson..");
+
+        validationRule.check(importedClasses);
+    }
+
+    // ========================================
     // CONSISTÊNCIA ENTRE FRAMEWORKS
     // ========================================
 
     @Test
-    @DisplayName("✅ DTOs devem ter mesma estrutura em ambos frameworks")
-    void dtosShouldHaveSameStructureInBothFrameworks() {
+    @DisplayName("✅ DTOs devem ter mesma estrutura em todos os frameworks")
+    void dtosShouldHaveSameStructureInAllFrameworks() {
         ArchRule dtoConsistencyRule = classes()
                 .that().haveSimpleNameEndingWith("DTO")
-                .and().resideInAnyPackage("..springboot.dto..", "..quarkus.dto..")
+                .and().resideInAnyPackage("..springboot.dto..", "..quarkus.dto..", "..micronaut.dto..")
                 .should().bePublic();
 
         dtoConsistencyRule.check(importedClasses);
@@ -241,7 +325,7 @@ class FrameworkStructureTest {
     void mappersShouldBePublicClasses() {
         ArchRule mapperMethodsRule = classes()
                 .that().haveSimpleNameEndingWith("Mapper")
-                .and().resideInAnyPackage("..springboot.mapper..", "..quarkus.mapper..")
+                .and().resideInAnyPackage("..springboot.mapper..", "..quarkus.mapper..", "..micronaut.mapper..")
                 .should().bePublic();
 
         mapperMethodsRule.check(importedClasses);
@@ -251,7 +335,7 @@ class FrameworkStructureTest {
     @DisplayName("✅ Controllers não devem acessar Infrastructure diretamente")
     void controllersShouldNotAccessInfrastructureDirectly() {
         ArchRule noInfrastructureAccessRule = noClasses()
-                .that().resideInAnyPackage("..springboot.controller..", "..quarkus.controller..")
+                .that().resideInAnyPackage("..springboot.controller..", "..quarkus.controller..", "..micronaut.controller..")
                 .should().dependOnClassesThat()
                 .resideInAPackage("..infrastructure..");
 

@@ -37,13 +37,15 @@ class HexagonalArchitectureTest {
                 .layer("Infrastructure").definedBy("..infrastructure..")
                 .optionalLayer("Quarkus").definedBy("..quarkus..")
                 .optionalLayer("SpringBoot").definedBy("..springboot..")
+                .optionalLayer("Micronaut").definedBy("..micronaut..")
                 
                 // Regras de dependência
                 .whereLayer("Domain").mayNotAccessAnyLayer()
                 .whereLayer("Application").mayOnlyAccessLayers("Domain")
                 .whereLayer("Infrastructure").mayOnlyAccessLayers("Domain", "Application")
                 .whereLayer("Quarkus").mayOnlyAccessLayers("Domain", "Application", "Infrastructure")
-                .whereLayer("SpringBoot").mayOnlyAccessLayers("Domain", "Application", "Infrastructure");
+                .whereLayer("SpringBoot").mayOnlyAccessLayers("Domain", "Application", "Infrastructure")
+                .whereLayer("Micronaut").mayOnlyAccessLayers("Domain", "Application", "Infrastructure");
 
         layeredArchitectureRule.check(importedClasses);
     }
@@ -54,7 +56,7 @@ class HexagonalArchitectureTest {
         ArchRule domainRule = noClasses()
                 .that().resideInAPackage("..domain..")
                 .should().dependOnClassesThat()
-                .resideInAnyPackage("..application..", "..infrastructure..", "..quarkus..", "..springboot..");
+                .resideInAnyPackage("..application..", "..infrastructure..", "..quarkus..", "..springboot..", "..micronaut..");
 
         domainRule.check(importedClasses);
     }
@@ -65,7 +67,7 @@ class HexagonalArchitectureTest {
         ArchRule applicationRule = noClasses()
                 .that().resideInAPackage("..application..")
                 .should().dependOnClassesThat()
-                .resideInAnyPackage("..infrastructure..", "..quarkus..", "..springboot..");
+                .resideInAnyPackage("..infrastructure..", "..quarkus..", "..springboot..", "..micronaut..");
 
         applicationRule.check(importedClasses);
     }
@@ -76,7 +78,7 @@ class HexagonalArchitectureTest {
         ArchRule infrastructureRule = noClasses()
                 .that().resideInAPackage("..infrastructure..")
                 .should().dependOnClassesThat()
-                .resideInAnyPackage("..quarkus..", "..springboot..");
+                .resideInAnyPackage("..quarkus..", "..springboot..", "..micronaut..");
 
         infrastructureRule.check(importedClasses);
     }

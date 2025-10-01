@@ -1,0 +1,40 @@
+micronaut:
+  application:
+    name: restaurant-management-micronaut
+  server:
+    port: 8083
+    cors:
+      enabled: true
+
+datasources:
+  default:
+    url: jdbc:mysql://localhost:3306/restaurant_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: restaurant_user
+    password: restaurant_password
+    dialect: MYSQL
+    
+jpa:
+  default:
+    entity-scan:
+      packages: 'com.restaurant.infrastructure.persistence.entity'
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        connection:
+          provider_disables_autocommit: true
+
+jackson:
+  serialization:
+    indentOutput: true
+  deserialization:
+    failOnUnknownProperties: false
+
+endpoints:
+  health:
+    enabled: true
+    sensitive: false

@@ -48,6 +48,7 @@
         <module>infrastructure</module>
         <module>architecture-tests</module>
         <module>quarkus-app</module>
+        <module>micronaut-app</module>
         <module>spring-boot-app</module>
     </modules>
 
