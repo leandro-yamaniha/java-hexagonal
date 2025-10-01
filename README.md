@@ -26,8 +26,8 @@ This project demonstrates the **true power of hexagonal architecture** by suppor
 | Framework | Port | Version | Web Server | DTOs | Controllers | OpenAPI | Virtual Threads | Status |
 |-----------|------|---------|------------|------|-------------|---------|-----------------|--------|
 | **Spring Boot** | 8082 | 3.5.6 | **Undertow** (high-performance) | 4 | 3 | ✅ Swagger UI | ✅ **Nativo** | ✅ Active |
-| **Quarkus** | 8081 | 3.6.4 | **Vert.x** (reactive) | 4 | 6 | ✅ Swagger UI | ⚠️ **Experimental** | ✅ Active |
-| **Micronaut** | 8083 | 4.2.3 | **Netty** (async) | 4 | 4 | ✅ Swagger UI | 🔴 **Básico** | ✅ Active |
+| **Quarkus** | 8081 | 3.15.1 | **Vert.x** (reactive) | 4 | 6 | ✅ Swagger UI | ⚠️ **Experimental** | ✅ Active |
+| **Micronaut** | 8083 | 4.6.3 | **Netty** (async) | 4 | 4 | ✅ Swagger UI | 🔴 **Básico** | ✅ Active |
 
 ### 📊 Visual Diagrams
 
@@ -208,7 +208,7 @@ Se você vir erros como "Unsatisfied dependency for type jakarta.persistence.Ent
 ## Technology Stack
 
 ### Backend
-- **Frameworks**: Spring Boot 3.5.x, Quarkus 3.x, Micronaut 4.x
+- **Frameworks**: Spring Boot 3.5.x, Quarkus 3.15.x, Micronaut 4.6.x
 - **Web Servers**: Undertow (Spring Boot), Vert.x (Quarkus), Netty (Micronaut)
 - **Language**: Java 21 (with Virtual Threads support)
 - **Database**: MySQL 8.0

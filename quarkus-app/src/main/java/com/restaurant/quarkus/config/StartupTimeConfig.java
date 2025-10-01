@@ -19,7 +19,7 @@ public class StartupTimeConfig {
         
         System.out.println("=".repeat(80));
         System.out.println("🚀 QUARKUS STARTUP COMPLETED");
-        System.out.println("📊 Framework: Quarkus 3.6.4");
+        System.out.println("📊 Framework: Quarkus 3.15.1");
         System.out.println("🌐 Web Server: Eclipse Vert.x (Reactive)");
         System.out.println("⏱️  Total Startup Time: " + startupTime + " ms");
         System.out.println("🧵 Virtual Threads: EXPERIMENTAL");

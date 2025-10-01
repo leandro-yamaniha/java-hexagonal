@@ -20,7 +20,7 @@ public class StartupTimeConfig implements ApplicationEventListener<ServerStartup
         
         System.out.println("=".repeat(80));
         System.out.println("🚀 MICRONAUT STARTUP COMPLETED");
-        System.out.println("📊 Framework: Micronaut 4.2.3");
+        System.out.println("📊 Framework: Micronaut 4.6.3");
         System.out.println("🌐 Web Server: Netty (Asynchronous NIO)");
         System.out.println("⏱️  Total Startup Time: " + startupTime + " ms");
         System.out.println("🧵 Virtual Threads: BASIC");

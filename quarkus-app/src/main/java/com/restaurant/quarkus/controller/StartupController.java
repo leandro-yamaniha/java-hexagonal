@@ -31,7 +31,7 @@ public class StartupController {
         
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("framework", "Quarkus");
-        metrics.put("version", "3.6.4");
+        metrics.put("version", "3.15.1");
         metrics.put("webServer", "Eclipse Vert.x");
         metrics.put("webServerType", "Reactive/Event-driven");
         metrics.put("jvmStartTime", JVM_START_TIME);

@@ -28,7 +28,7 @@ public class StartupController {
         
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("framework", "Micronaut");
-        metrics.put("version", "4.2.3");
+        metrics.put("version", "4.6.3");
         metrics.put("webServer", "Netty");
         metrics.put("webServerType", "Asynchronous NIO");
         metrics.put("jvmStartTime", JVM_START_TIME);
