@@ -20,7 +20,7 @@ public class StartupTimeConfig implements ApplicationListener<ApplicationReadyEv
         
         System.out.println("=".repeat(80));
         System.out.println("🚀 SPRING BOOT STARTUP COMPLETED");
-        System.out.println("📊 Framework: Spring Boot 3.2.1");
+        System.out.println("📊 Framework: Spring Boot 3.5.6");
         System.out.println("🌐 Web Server: Undertow (High-Performance NIO)");
         System.out.println("⏱️  Total Startup Time: " + startupTime + " ms");
         System.out.println("🧵 Virtual Threads: ENABLED");

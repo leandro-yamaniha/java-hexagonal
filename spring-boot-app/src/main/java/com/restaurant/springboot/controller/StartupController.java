@@ -29,7 +29,7 @@ public class StartupController {
         
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("framework", "Spring Boot");
-        metrics.put("version", "3.2.1");
+        metrics.put("version", "3.5.6");
         metrics.put("webServer", "Undertow");
         metrics.put("webServerType", "High-Performance NIO");
         metrics.put("jvmStartTime", JVM_START_TIME);
