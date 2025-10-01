@@ -11,7 +11,6 @@ This project implements a **pure hexagonal architecture** with strict separation
 ```
 restaurant-management/
 ├── domain/                     # 🔵 Core business logic (pure Java, no frameworks)
-├── application/               # 🔵 Use cases and application services (pure Java)
 ├── infrastructure/            # 🟡 External adapters (JPA, Redis, pure implementations)
 ├── spring-boot-app/          # 🟢 Spring Boot REST API (port 8082) ✅
 ├── quarkus-app/              # 🟢 Quarkus REST API (port 8081) ✅
@@ -27,8 +26,8 @@ This project demonstrates the **true power of hexagonal architecture** by suppor
 | Framework | Port | Version | DTOs | Mappers | Controllers | OpenAPI | Status |
 |-----------|------|---------|------|---------|-------------|---------|--------|
 | **Spring Boot** | 8082 | 3.2.1 | 4 | 4 | 2 | ✅ Swagger UI | ✅ Active |
-| **Quarkus** | 8081 | 3.6.4 | 4 | 2 | 1 | ✅ Swagger UI | ✅ Active |
-| **Micronaut** | 8083 | 4.2.3 | 4 | 2 | 1 | ✅ YAML Spec | ✅ Active |
+| **Quarkus** | 8081 | 3.6.4 | 4 | 2 | 5 | ✅ Swagger UI | ✅ Active |
+| **Micronaut** | 8083 | 4.2.3 | 4 | 2 | 3 | ✅ Swagger UI | ✅ Active |
 
 ### 📊 Visual Diagrams
 
