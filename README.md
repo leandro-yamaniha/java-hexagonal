@@ -25,7 +25,7 @@ This project demonstrates the **true power of hexagonal architecture** by suppor
 
 | Framework | Port | Version | Web Server | DTOs | Controllers | OpenAPI | Virtual Threads | Status |
 |-----------|------|---------|------------|------|-------------|---------|-----------------|--------|
-| **Spring Boot** | 8082 | 3.2.1 | **Tomcat** (embedded) | 4 | 3 | ✅ Swagger UI | ✅ **Nativo** | ✅ Active |
+| **Spring Boot** | 8082 | 3.2.1 | **Undertow** (high-performance) | 4 | 3 | ✅ Swagger UI | ✅ **Nativo** | ✅ Active |
 | **Quarkus** | 8081 | 3.6.4 | **Vert.x** (reactive) | 4 | 6 | ✅ Swagger UI | ⚠️ **Experimental** | ✅ Active |
 | **Micronaut** | 8083 | 4.2.3 | **Netty** (async) | 4 | 4 | ✅ Swagger UI | 🔴 **Básico** | ✅ Active |
 
@@ -77,12 +77,12 @@ Each framework uses a different embedded web server, showcasing different archit
 
 | Framework | Web Server | Type | Key Features |
 |-----------|------------|------|--------------|
-| **Spring Boot** | **Apache Tomcat** | Traditional Servlet | ✅ Mature, stable, widely adopted<br/>✅ Full Servlet API support<br/>✅ Easy configuration and tuning |
+| **Spring Boot** | **Undertow** | High-Performance NIO | ✅ Lightweight, fast startup<br/>✅ Low memory consumption<br/>✅ Excellent for microservices |
 | **Quarkus** | **Eclipse Vert.x** | Reactive/Event-driven | ✅ High performance, low memory<br/>✅ Reactive streams support<br/>✅ Non-blocking I/O |
 | **Micronaut** | **Netty** | Asynchronous NIO | ✅ Low latency, high throughput<br/>✅ Minimal memory footprint<br/>✅ Built for microservices |
 
 **Performance Characteristics:**
-- **Tomcat**: Best for traditional applications, excellent tooling
+- **Undertow**: Lightweight, fast, ideal for cloud-native applications
 - **Vert.x**: Optimal for reactive workloads, event-driven architecture  
 - **Netty**: Superior for microservices, minimal resource usage
 
@@ -183,7 +183,7 @@ Se você vir erros como "Unsatisfied dependency for type jakarta.persistence.Ent
 
 ### Backend
 - **Frameworks**: Spring Boot 3.x, Quarkus 3.x, Micronaut 4.x
-- **Web Servers**: Tomcat (Spring Boot), Vert.x (Quarkus), Netty (Micronaut)
+- **Web Servers**: Undertow (Spring Boot), Vert.x (Quarkus), Netty (Micronaut)
 - **Language**: Java 21 (with Virtual Threads support)
 - **Database**: MySQL 8.0
 - **Cache**: Redis
