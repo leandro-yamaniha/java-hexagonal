@@ -25,7 +25,8 @@ Sistema de gerenciamento de restaurante construído com **arquitetura hexagonal 
 graph TB
     subgraph "Presentation Layer"
         A[Spring Boot<br/>Controllers + DTOs]
-        B[Quarkus<br/>Resources]
+        B[Quarkus<br/>Resources + DTOs]
+        F[Micronaut<br/>Controllers + DTOs]
     end
     
     subgraph "Application Layer"
@@ -42,6 +43,7 @@ graph TB
     
     A --> C
     B --> C
+    F --> C
     C --> D
     E --> D
     
@@ -53,7 +55,7 @@ graph TB
 1. **Domain** (🔵 Puro) - Entidades e lógica de negócio
 2. **Application** (🔵 Puro) - Casos de uso
 3. **Infrastructure** (🟡 Adaptadores) - JPA, Redis, Mappers
-4. **Presentation** (🟢 Frameworks) - Spring Boot, Quarkus
+4. **Presentation** (🟢 Frameworks) - Spring Boot, Quarkus, Micronaut
 
 ---
 
@@ -180,6 +182,22 @@ mvn quarkus:dev -pl quarkus-app
 
 # Acessar
 http://localhost:8081/api/v1/customers
+```
+
+### Micronaut (Porta 8083)
+
+```bash
+# Compilar
+mvn clean package -pl micronaut-app -DskipTests
+
+# Executar
+java -Dmicronaut.server.port=8083 -jar micronaut-app/target/micronaut-app-1.0.0.jar
+
+# Acessar
+http://localhost:8083/api/v1/customers
+
+# OpenAPI
+http://localhost:8083/swagger/restaurant-management-api---micronaut-1.0.0.yml
 ```
 
 ### Testes de Arquitetura
@@ -338,6 +356,7 @@ Testes Falhando:             0
 ### Frameworks
 - Spring Boot 3.x
 - Quarkus 3.x
+- Micronaut 4.x
 
 ### Persistência
 - JPA/Hibernate

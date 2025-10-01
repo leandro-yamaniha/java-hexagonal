@@ -24,11 +24,11 @@ restaurant-management/
 
 This project demonstrates the **true power of hexagonal architecture** by supporting three different frameworks with the **same domain and business logic**:
 
-| Framework | Port | Version | DTOs | Mappers | Controllers | Status |
-|-----------|------|---------|------|---------|-------------|--------|
-| **Spring Boot** | 8082 | 3.2.1 | 4 | 4 | 2 | ✅ Active |
-| **Quarkus** | 8081 | 3.6.4 | 4 | 2 | 1 | ✅ Active |
-| **Micronaut** | 8083 | 4.2.3 | 4 | 2 | 1 | ✅ Active |
+| Framework | Port | Version | DTOs | Mappers | Controllers | OpenAPI | Status |
+|-----------|------|---------|------|---------|-------------|---------|--------|
+| **Spring Boot** | 8082 | 3.2.1 | 4 | 4 | 2 | ✅ Swagger UI | ✅ Active |
+| **Quarkus** | 8081 | 3.6.4 | 4 | 2 | 1 | ✅ Swagger UI | ✅ Active |
+| **Micronaut** | 8083 | 4.2.3 | 4 | 2 | 1 | ✅ YAML Spec | ✅ Active |
 
 ### 📊 Visual Diagrams
 
@@ -250,6 +250,7 @@ java -jar micronaut-app/target/micronaut-app-1.0.0.jar
 - **URL**: http://localhost:8083
 - **API**: http://localhost:8083/api/v1/customers
 - **Health**: http://localhost:8083/health
+- **OpenAPI**: http://localhost:8083/swagger/restaurant-management-api---micronaut-1.0.0.yml
 - **Status**: ✅ Fully functional
 
 ### 🎯 Quick Start - All Three Frameworks
@@ -291,11 +292,11 @@ curl http://localhost:8083/health            # Micronaut
 
 ### OpenAPI/Swagger Documentation
 
-| Framework | Swagger UI | OpenAPI JSON |
+| Framework | Swagger UI | OpenAPI Spec |
 |-----------|------------|--------------|
 | **Spring Boot** | http://localhost:8082/swagger-ui.html | http://localhost:8082/v3/api-docs |
 | **Quarkus** | http://localhost:8081/q/swagger-ui | http://localhost:8081/q/openapi |
-| **Micronaut** | Not configured | Use Postman or curl |
+| **Micronaut** | Static files served | http://localhost:8083/swagger/restaurant-management-api---micronaut-1.0.0.yml |
 
 ### Application Endpoints (All Frameworks)
 
@@ -315,7 +316,7 @@ curl http://localhost:8083/health            # Micronaut
 - **Base URL**: http://localhost:8083
 - **Health Check**: http://localhost:8083/health
 - **Customer API**: http://localhost:8083/api/v1/customers
-- **Note**: Swagger UI not configured (use Postman or curl for testing)
+- **OpenAPI Spec**: http://localhost:8083/swagger/restaurant-management-api---micronaut-1.0.0.yml
 
 ### Available Endpoints (All Three Frameworks)
 ```
