@@ -23,11 +23,11 @@ restaurant-management/
 
 This project demonstrates the **true power of hexagonal architecture** by supporting three different frameworks with the **same domain and business logic**:
 
-| Framework | Port | Version | DTOs | Mappers | Controllers | OpenAPI | Status |
-|-----------|------|---------|------|---------|-------------|---------|--------|
-| **Spring Boot** | 8082 | 3.2.1 | 4 | 4 | 2 | ✅ Swagger UI | ✅ Active |
-| **Quarkus** | 8081 | 3.6.4 | 4 | 2 | 5 | ✅ Swagger UI | ✅ Active |
-| **Micronaut** | 8083 | 4.2.3 | 4 | 2 | 3 | ✅ Swagger UI | ✅ Active |
+| Framework | Port | Version | DTOs | Mappers | Controllers | OpenAPI | Virtual Threads | Status |
+|-----------|------|---------|------|---------|-------------|---------|-----------------|--------|
+| **Spring Boot** | 8082 | 3.2.1 | 4 | 4 | 3 | ✅ Swagger UI | ✅ **Nativo** | ✅ Active |
+| **Quarkus** | 8081 | 3.6.4 | 4 | 2 | 6 | ✅ Swagger UI | ⚠️ **Experimental** | ✅ Active |
+| **Micronaut** | 8083 | 4.2.3 | 4 | 2 | 4 | ✅ Swagger UI | 🔴 **Básico** | ✅ Active |
 
 ### 📊 Visual Diagrams
 
@@ -49,7 +49,27 @@ This project uses the **DTO (Data Transfer Object) pattern** to keep the domain 
 - ✅ Domain 100% pure (no Jackson, no framework dependencies)
 - ✅ Easy to change API format without affecting business logic
 - ✅ Better testability and maintainability
-- ✅ Validated by architecture tests (44/44 passing)
+- ✅ Validated by architecture tests (75/75 passing)
+
+### 🧵 Virtual Threads (Project Loom)
+
+This project demonstrates **Virtual Threads** implementation across all three frameworks with **Java 21+**:
+
+| Framework | Support Level | Configuration | Status |
+|-----------|---------------|---------------|--------|
+| **Spring Boot** | ✅ **Native** | `spring.threads.virtual.enabled=true` | ✅ **Production Ready** |
+| **Quarkus** | ⚠️ **Experimental** | `quarkus.virtual-threads.enabled=true` + `@RunOnVirtualThread` | ✅ **Functional** |
+| **Micronaut** | 🔴 **Basic** | `executors.io.type=virtual` + `@ExecuteOn(TaskExecutors.IO)` | ⚠️ **Limited** |
+
+**Virtual Threads Benefits:**
+- ✅ **Better Throughput** - For I/O intensive operations
+- ✅ **Lower Memory Usage** - Lightweight threads
+- ✅ **High Scalability** - Support for thousands of concurrent connections
+- ✅ **Backward Compatibility** - Existing code works without changes
+
+**Benchmark Endpoints:**
+- `GET /api/v1/benchmark/virtual-threads?delayMs=1000` - I/O intensive test
+- `GET /api/v1/benchmark/async?tasks=10` - Parallel processing test
 
 ## 🛠️ Troubleshooting
 
@@ -147,12 +167,13 @@ Se você vir erros como "Unsatisfied dependency for type jakarta.persistence.Ent
 ## Technology Stack
 
 ### Backend
-- **Frameworks**: Quarkus 3.x, Spring Boot 3.x
-- **Language**: Java 21
+- **Frameworks**: Spring Boot 3.x, Quarkus 3.x, Micronaut 4.x
+- **Language**: Java 21 (with Virtual Threads support)
 - **Database**: MySQL 8.0
 - **Cache**: Redis
 - **Build Tool**: Maven
-- **Testing**: JUnit 5, Testcontainers
+- **Testing**: JUnit 5, Testcontainers, ArchUnit
+- **Performance**: Virtual Threads (Project Loom)
 
 ### Frontend
 - **Framework**: Angular 17
@@ -219,6 +240,7 @@ java -jar target/spring-boot-app-1.0.0.jar
 - **API**: http://localhost:8082/api/v1/customers
 - **Health**: http://localhost:8082/actuator/health
 - **Swagger**: http://localhost:8082/swagger-ui.html
+- **Virtual Threads**: http://localhost:8082/api/v1/benchmark/virtual-threads
 - **Status**: ✅ Fully functional
 
 #### 🟢 Quarkus Application (Port 8081)
@@ -235,6 +257,7 @@ java -jar target/quarkus-app-runner.jar
 - **API**: http://localhost:8081/api/v1/customers
 - **Health**: http://localhost:8081/q/health
 - **Dev UI**: http://localhost:8081/q/dev
+- **Virtual Threads**: http://localhost:8081/api/v1/benchmark/virtual-threads
 - **Status**: ✅ Fully functional
 
 #### 🟢 Micronaut Application (Port 8083)
@@ -250,6 +273,7 @@ java -jar micronaut-app/target/micronaut-app-1.0.0.jar
 - **API**: http://localhost:8083/api/v1/customers
 - **Health**: http://localhost:8083/health
 - **OpenAPI**: http://localhost:8083/swagger/restaurant-management-api---micronaut-1.0.0.yml
+- **Virtual Threads**: http://localhost:8083/api/v1/benchmark/virtual-threads
 - **Status**: ✅ Fully functional
 
 ### 🎯 Quick Start - All Three Frameworks
