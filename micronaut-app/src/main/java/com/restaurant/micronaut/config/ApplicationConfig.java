@@ -14,14 +14,25 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import javax.sql.DataSource;
 
 /**
  * Micronaut configuration for dependency injection
  */
 @Factory
 public class ApplicationConfig {
+    
+    @Singleton
+    @Primary
+    public EntityManager entityManager() {
+        // Create EntityManagerFactory with programmatic configuration
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+        return emf.createEntityManager();
+    }
     
     @Singleton
     @Primary

@@ -8,11 +8,10 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:mysql://localhost:3306/restaurant_db
+    jdbc-url: jdbc:mysql://localhost:3306/restaurant_db
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: restaurant_user
     password: restaurant_password
-    dialect: MYSQL
     
 jpa:
   default:
@@ -25,8 +24,6 @@ jpa:
         show_sql: true
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
-        connection:
-          provider_disables_autocommit: true
 
 jackson:
   serialization:
