@@ -7,13 +7,18 @@ import com.restaurant.micronaut.mapper.CustomerDTOMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 /**
  * Micronaut REST controller for customer operations
  */
@@ -24,7 +29,6 @@ public class CustomerController {
     @Inject
     private CustomerUseCase customerUseCase;
     
-    @Inject
     private CustomerDTOMapper customerMapper;
     
     @Post
@@ -43,8 +47,14 @@ public class CustomerController {
     }
     
     @Get
-    @Operation(summary = "Get all customers")
-    public HttpResponse<List<CustomerDTO>> getAllCustomers(@QueryValue(defaultValue = "true") boolean active) {
+    @Operation(summary = "Get all customers", description = "Retrieve a list of all customers")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "List of customers", 
+                    content = @Content(schema = @Schema(implementation = CustomerDTO.class)))
+    })
+    public HttpResponse<List<CustomerDTO>> getAllCustomers(
+            @Parameter(description = "Filter by active status") 
+            @QueryValue(defaultValue = "true") boolean active) {
         List<Customer> customers = active ? 
             customerUseCase.getAllActiveCustomers() : 
             customerUseCase.getAllActiveCustomers();

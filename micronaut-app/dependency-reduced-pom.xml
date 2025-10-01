@@ -20,6 +20,16 @@
               <artifactId>micronaut-inject-java</artifactId>
               <version>${micronaut.version}</version>
             </path>
+            <path>
+              <groupId>io.micronaut.data</groupId>
+              <artifactId>micronaut-data-processor</artifactId>
+              <version>4.8.1</version>
+            </path>
+            <path>
+              <groupId>io.micronaut.openapi</groupId>
+              <artifactId>micronaut-openapi</artifactId>
+              <version>5.2.0</version>
+            </path>
           </annotationProcessorPaths>
         </configuration>
       </plugin>
