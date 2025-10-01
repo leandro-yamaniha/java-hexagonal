@@ -10,15 +10,134 @@
   <name>Restaurant Management - Micronaut Application</name>
   <description>Micronaut REST API implementation</description>
   <build>
+    <sourceDirectory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/src/main/java</sourceDirectory>
+    <scriptSourceDirectory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/src/main/scripts</scriptSourceDirectory>
+    <testSourceDirectory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/src/test/java</testSourceDirectory>
+    <outputDirectory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/target/classes</outputDirectory>
+    <testOutputDirectory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/target/test-classes</testOutputDirectory>
+    <resources>
+      <resource>
+        <directory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/src/main/resources</directory>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/src/test/resources</directory>
+      </testResource>
+    </testResources>
+    <directory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/target</directory>
+    <finalName>micronaut-app-1.0.0</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.7.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.12.1</version>
+          <configuration>
+            <source>21</source>
+            <target>21</target>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>1.5.5.Final</version>
+              </path>
+            </annotationProcessorPaths>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.2.3</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.2.3</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.12.1</version>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>io.micronaut</groupId>
+                  <artifactId>micronaut-inject-java</artifactId>
+                  <version>4.2.3</version>
+                </path>
+                <path>
+                  <groupId>io.micronaut.data</groupId>
+                  <artifactId>micronaut-data-processor</artifactId>
+                  <version>4.8.1</version>
+                </path>
+                <path>
+                  <groupId>io.micronaut.openapi</groupId>
+                  <artifactId>micronaut-openapi</artifactId>
+                  <version>5.2.0</version>
+                </path>
+              </annotationProcessorPaths>
+              <source>21</source>
+              <target>21</target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>io.micronaut</groupId>
+                  <artifactId>micronaut-inject-java</artifactId>
+                  <version>4.2.3</version>
+                </path>
+                <path>
+                  <groupId>io.micronaut.data</groupId>
+                  <artifactId>micronaut-data-processor</artifactId>
+                  <version>4.8.1</version>
+                </path>
+                <path>
+                  <groupId>io.micronaut.openapi</groupId>
+                  <artifactId>micronaut-openapi</artifactId>
+                  <version>5.2.0</version>
+                </path>
+              </annotationProcessorPaths>
+              <source>21</source>
+              <target>21</target>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
           <annotationProcessorPaths>
             <path>
               <groupId>io.micronaut</groupId>
               <artifactId>micronaut-inject-java</artifactId>
-              <version>${micronaut.version}</version>
+              <version>4.2.3</version>
             </path>
             <path>
               <groupId>io.micronaut.data</groupId>
@@ -31,6 +150,8 @@
               <version>5.2.0</version>
             </path>
           </annotationProcessorPaths>
+          <source>21</source>
+          <target>21</target>
         </configuration>
       </plugin>
       <plugin>
@@ -45,13 +166,145 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>${exec.mainClass}</mainClass>
+                  <mainClass>com.restaurant.micronaut.MicronautApplication</mainClass>
                 </transformer>
                 <transformer />
               </transformers>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>default-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>default-testResources</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>testResources</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.1</version>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.3</version>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <id>default-install</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <id>default-deploy</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.12.1</version>
+        <executions>
+          <execution>
+            <id>default-site</id>
+            <phase>site</phase>
+            <goals>
+              <goal>site</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/target/site</outputDirectory>
+              <reportPlugins>
+                <reportPlugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-project-info-reports-plugin</artifactId>
+                </reportPlugin>
+              </reportPlugins>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-deploy</id>
+            <phase>site-deploy</phase>
+            <goals>
+              <goal>deploy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/target/site</outputDirectory>
+              <reportPlugins>
+                <reportPlugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-project-info-reports-plugin</artifactId>
+                </reportPlugin>
+              </reportPlugins>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <outputDirectory>/Volumes/Dock/ai/ide/windsurf/restaurant-management/micronaut-app/target/site</outputDirectory>
+          <reportPlugins>
+            <reportPlugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+            </reportPlugin>
+          </reportPlugins>
+        </configuration>
       </plugin>
     </plugins>
   </build>
