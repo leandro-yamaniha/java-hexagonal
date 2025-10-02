@@ -556,6 +556,51 @@ All three applications successfully serve the same data from the shared MySQL da
 - **Database**: MySQL connection validated on all three applications
 - **Cache**: Redis connectivity confirmed across all frameworks
 
+## 📚 Reference Documentation
+
+### Java & Core Technologies
+
+| Technology | Version | Documentation |
+|------------|---------|---------------|
+| **Java** | 21 | [Oracle Java 21 Docs](https://docs.oracle.com/en/java/javase/21/) |
+| **Maven** | 3.9+ | [Maven Documentation](https://maven.apache.org/guides/) |
+| **JPA/Hibernate** | 6.x | [Hibernate ORM Documentation](https://hibernate.org/orm/documentation/6.5/) |
+| **MySQL** | 8.0 | [MySQL 8.0 Reference Manual](https://dev.mysql.com/doc/refman/8.0/en/) |
+| **Redis** | Latest | [Redis Documentation](https://redis.io/docs/) |
+
+### Backend Frameworks
+
+| Framework | Version | Official Docs | Getting Started |
+|-----------|---------|---------------|-----------------|
+| **Spring Boot** | 3.5.6 | [Spring Boot Docs](https://docs.spring.io/spring-boot/index.html) | [Spring Boot Reference](https://docs.spring.io/spring-boot/reference/) |
+| **Quarkus** | 3.15.1 | [Quarkus Guides](https://quarkus.io/guides/) | [Getting Started Guide](https://quarkus.io/get-started/) |
+| **Micronaut** | 4.6.3 | [Micronaut Documentation](https://docs.micronaut.io/latest/guide/) | [Quick Start](https://guides.micronaut.io/latest/micronaut-creating-first-graal-app.html) |
+
+### Frontend
+
+| Technology | Version | Documentation |
+|------------|---------|---------------|
+| **Angular** | 18+ | [Angular Documentation](https://angular.dev/overview) |
+| **TypeScript** | Latest | [TypeScript Docs](https://www.typescriptlang.org/docs/) |
+| **npm** | Latest | [npm Documentation](https://docs.npmjs.com/) |
+
+### Architecture & Patterns
+
+| Topic | Resource |
+|-------|----------|
+| **Hexagonal Architecture** | [Alistair Cockburn's Article](https://alistair.cockburn.us/hexagonal-architecture/) |
+| **Ports and Adapters** | [Herberto Graca's Blog](https://herbertograca.com/2017/09/14/ports-adapters-architecture/) |
+| **Clean Architecture** | [Robert C. Martin's Blog](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) |
+| **ArchUnit** | [ArchUnit User Guide](https://www.archunit.org/userguide/html/000_Index.html) |
+
+### DevOps & Tools
+
+| Tool | Documentation |
+|------|---------------|
+| **Docker** | [Docker Documentation](https://docs.docker.com/) |
+| **Docker Compose** | [Compose Specification](https://docs.docker.com/compose/) |
+| **Git** | [Git Documentation](https://git-scm.com/doc) |
+
 ## License
 
 MIT License
