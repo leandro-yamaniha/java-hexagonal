@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.restaurant</groupId>
-    <artifactId>restaurant-management</artifactId>
+    <artifactId>backend</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <name>Restaurant Management System</name>
-    <description>Hexagonal architecture restaurant management system with Quarkus and Spring Boot support</description>
+    <name>Restaurant Management - Backend</name>
+    <description>Backend modules including domain, application, infrastructure and framework implementations</description>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -79,7 +79,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
 
             <!-- Database -->
             <dependency>

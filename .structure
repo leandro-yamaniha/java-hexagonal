@@ -1,0 +1,46 @@
+restaurant-management/
+├── README.md                    # 📘 Único documento na raiz
+│
+├── docs/                        # 📚 TODA a documentação (17 arquivos)
+│   ├── README.md                   # Índice da documentação
+│   ├── DOCUMENTATION_INDEX.md      # Catálogo completo
+│   │
+│   ├── EXECUTIVE_SUMMARY.md        # Resumo executivo
+│   ├── PROJECT_STRUCTURE.md        # Estrutura do projeto
+│   ├── POLYGLOT_STRUCTURE.md       # Estrutura polyglot
+│   ├── SETUP.md                    # Guia de configuração
+│   │
+│   ├── ARCHITECTURE.md             # Arquitetura hexagonal
+│   ├── ARCHITECTURE_DIAGRAMS.md    # Diagramas visuais
+│   ├── ARCHITECTURE_STATUS_REPORT.md
+│   ├── ARCHITECTURE_TESTS_SUMMARY.md
+│   │
+│   ├── DTO_PATTERN_GUIDE.md        # Guia de DTOs
+│   ├── DTO_IMPLEMENTATION_COMPLETE.md
+│   ├── IMPLEMENTATION_SUMMARY.md
+│   │
+│   ├── FRAMEWORK_ARCHITECTURE_TESTS.md
+│   ├── FRAMEWORK_STRUCTURE_TESTS_SUMMARY.md
+│   ├── QUARKUS_VALIDATION_REPORT.md
+│   └── STARTUP_TIMES.md            # Performance
+│
+├── backend/                     # ☕ Backend Java (auto-contido)
+│   ├── pom.xml                     # ROOT POM (sem parent)
+│   ├── README.md                   # Guia do backend (código)
+│   ├── domain/
+│   ├── application/
+│   ├── infrastructure/
+│   ├── quarkus-app/
+│   ├── micronaut-app/
+│   ├── spring-boot-app/
+│   └── architecture-tests/
+│
+├── frontend-angular/            # 🎨 Frontend (auto-contido)
+│   └── package.json
+│
+├── docker/                      # 🐳 Docker
+│   └── docker-compose.yml
+│
+└── scripts/                     # 📜 Scripts
+    ├── README.md
+    └── *.sh

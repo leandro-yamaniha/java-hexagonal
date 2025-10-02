@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 APP_NAME="Micronaut Restaurant Management"
-APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/micronaut-app"
+APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/backend/micronaut-app"
 PORT=8083
 JAVA_OPTS="-Xmx256m -Xms128m"
 PROFILE="dev"

@@ -2,7 +2,9 @@
 
 A comprehensive restaurant management system built with **hexagonal architecture** (ports and adapters pattern), supporting **three frameworks** (Spring Boot, Quarkus, and Micronaut) with complete framework independence in core modules.
 
-> 📋 **Quick Start**: See [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) for a complete overview of the project.
+> 📋 **Quick Start**: See [docs/EXECUTIVE_SUMMARY.md](./docs/EXECUTIVE_SUMMARY.md) for a complete overview of the project.
+> 
+> 📚 **Documentation**: All documentation is in [docs/](./docs/) - See [docs/README.md](./docs/README.md) for complete navigation.
 
 ## 🏗️ Architecture
 
@@ -10,14 +12,20 @@ This project implements a **pure hexagonal architecture** with strict separation
 
 ```
 restaurant-management/
-├── domain/                     # 🔵 Core business logic (pure Java, no frameworks)
-├── infrastructure/            # 🟡 External adapters (JPA, Redis, pure implementations)
-├── spring-boot-app/          # 🟢 Spring Boot REST API (port 8082) ✅
-├── quarkus-app/              # 🟢 Quarkus REST API (port 8081) ✅
-├── micronaut-app/            # 🟢 Micronaut REST API (port 8083) ✅
-├── architecture-tests/        # 🧪 ArchUnit tests (75 tests validating architecture)
-└── docker/                   # 🐳 Docker configurations (MySQL + Redis)
+├── backend/                    # 🔧 Backend Java modules
+│   ├── domain/                # 🔵 Core business logic (pure Java, no frameworks)
+│   ├── application/           # 🟣 Use cases and ports
+│   ├── infrastructure/        # 🟡 External adapters (JPA, Redis)
+│   ├── spring-boot-app/      # 🟢 Spring Boot REST API (port 8082) ✅
+│   ├── quarkus-app/          # 🟢 Quarkus REST API (port 8081) ✅
+│   ├── micronaut-app/        # 🟢 Micronaut REST API (port 8083) ✅
+│   └── architecture-tests/    # 🧪 ArchUnit tests (75 tests)
+├── frontend-angular/          # 🎨 Angular frontend
+├── docker/                    # 🐳 Docker (MySQL + Redis)
+└── scripts/                   # 📜 Automation scripts
 ```
+
+> 📋 See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for detailed structure documentation
 
 ### 🎯 Three Frameworks, One Architecture
 
@@ -29,18 +37,20 @@ This project demonstrates the **true power of hexagonal architecture** by suppor
 | **Quarkus** | 8081 | 3.15.1 | **Vert.x** (reactive) | 4 | 6 | ✅ Swagger UI | ⚠️ **Experimental** | ✅ Active |
 | **Micronaut** | 8083 | 4.6.3 | **Netty** (async) | 4 | 4 | ✅ Swagger UI | 🔴 **Básico** | ✅ Active |
 
-### 📊 Visual Diagrams
+### 📊 Backend Documentation
 
-For detailed architecture diagrams and flow charts, see:
-- **[ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md)** - Complete visual documentation with Mermaid diagrams
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Detailed architecture documentation
-- **[ARCHITECTURE_TESTS_SUMMARY.md](./ARCHITECTURE_TESTS_SUMMARY.md)** - Architecture tests summary
+For detailed backend architecture and implementation documentation, see the **[backend/](./backend/)** folder:
+
+- **[backend/README.md](./backend/README.md)** - Backend overview and documentation index
+- **[backend/ARCHITECTURE.md](./backend/ARCHITECTURE.md)** - Detailed architecture documentation
+- **[backend/ARCHITECTURE_DIAGRAMS.md](./backend/ARCHITECTURE_DIAGRAMS.md)** - Visual diagrams with Mermaid
+- **[backend/DTO_PATTERN_GUIDE.md](./backend/DTO_PATTERN_GUIDE.md)** - Complete DTO pattern guide
+- **[backend/STARTUP_TIMES.md](./backend/STARTUP_TIMES.md)** - Performance comparison
 
 ### 🎨 DTO Pattern
 
-This project uses the **DTO (Data Transfer Object) pattern** to keep the domain layer pure and free from serialization concerns:
+This project uses the **DTO (Data Transfer Object) pattern** to keep the domain layer pure:
 
-- **[DTO_PATTERN_GUIDE.md](./DTO_PATTERN_GUIDE.md)** - Complete guide with examples and best practices
 - **Domain Layer**: Pure Java entities without framework annotations
 - **Presentation Layer**: DTOs with Jackson annotations for JSON serialization
 - **Mappers**: Convert between Domain entities and DTOs

@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 APP_NAME="Quarkus Restaurant Management"
-APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/quarkus-app"
+APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/backend/quarkus-app"
 PORT=8081
 JAVA_OPTS="-Xmx256m -Xms128m"
 PROFILE="dev"

@@ -309,7 +309,7 @@ java -version
 ### Build Failures
 Clean and rebuild:
 ```bash
-cd spring-boot-app && mvn clean package -DskipTests
+cd backend/spring-boot-app && mvn clean package -DskipTests
 cd ../quarkus-app && mvn clean package -DskipTests
 cd ../micronaut-app && mvn clean package -DskipTests
 ```

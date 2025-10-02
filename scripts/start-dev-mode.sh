@@ -150,13 +150,13 @@ kill_port 8083 "Micronaut"
 echo -e "${BLUE}🚀 Starting all applications in development mode...${NC}"
 
 # Start Quarkus in dev mode (with hot reload)
-start_dev_app "quarkus-app" "Quarkus" 8081 "mvn quarkus:dev -Ddebug=false"
+start_dev_app "backend/quarkus-app" "Quarkus" 8081 "mvn quarkus:dev -Ddebug=false"
 
 # Start Spring Boot in dev mode (with hot reload)
-start_dev_app "spring-boot-app" "Spring Boot" 8082 "mvn spring-boot:run -Dspring-boot.run.jvmArguments='-Dspring.devtools.restart.enabled=true'"
+start_dev_app "backend/spring-boot-app" "Spring Boot" 8082 "mvn spring-boot:run -Dspring-boot.run.jvmArguments='-Dspring.devtools.restart.enabled=true'"
 
 # Start Micronaut in dev mode
-start_dev_app "micronaut-app" "Micronaut" 8083 "mvn mn:run"
+start_dev_app "backend/micronaut-app" "Micronaut" 8083 "mvn mn:run"
 
 # Wait for applications to start
 echo -e "${BLUE}⏳ Waiting for applications to start...${NC}"

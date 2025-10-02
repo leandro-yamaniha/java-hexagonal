@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 APP_NAME="Spring Boot Restaurant Management"
-APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/spring-boot-app"
+APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/backend/spring-boot-app"
 PORT=8082
 JAVA_OPTS="-Xmx512m -Xms256m"
 PROFILE="dev"
