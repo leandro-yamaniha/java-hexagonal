@@ -1,0 +1,47 @@
+version: '3.8'
+
+# Micronaut Backend Configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.micronaut.yml up
+
+services:
+  # Micronaut Instance 1
+  micronaut-app-1:
+    build:
+      context: ../backend/micronaut-app
+      dockerfile: Dockerfile
+    container_name: micronaut-app-1
+    environment:
+      DATASOURCES_DEFAULT_URL: jdbc:mysql://mysql:3306/restaurant_db
+      DATASOURCES_DEFAULT_USERNAME: restaurant_user
+      DATASOURCES_DEFAULT_PASSWORD: restaurant123
+      REDIS_URI: redis://redis:6379
+      MICRONAUT_SERVER_PORT: 8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+
+  # Micronaut Instance 2
+  micronaut-app-2:
+    build:
+      context: ../backend/micronaut-app
+      dockerfile: Dockerfile
+    container_name: micronaut-app-2
+    environment:
+      DATASOURCES_DEFAULT_URL: jdbc:mysql://mysql:3306/restaurant_db
+      DATASOURCES_DEFAULT_USERNAME: restaurant_user
+      DATASOURCES_DEFAULT_PASSWORD: restaurant123
+      REDIS_URI: redis://redis:6379
+      MICRONAUT_SERVER_PORT: 8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - restaurant-network
+    restart: unless-stopped

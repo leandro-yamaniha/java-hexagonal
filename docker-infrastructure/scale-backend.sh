@@ -9,24 +9,24 @@ if [ -z "$FRAMEWORK" ]; then
     echo "Usage: ./scale-backend.sh [spring|quarkus|micronaut]"
     echo ""
     echo "Examples:"
-    echo "  ./scale-backend.sh spring     # Scale Spring Boot only"
-    echo "  ./scale-backend.sh quarkus    # Scale Quarkus only"
-    echo "  ./scale-backend.sh micronaut  # Scale Micronaut only"
+    echo "  ./scale-backend.sh spring     # Start Spring Boot only (2 instances)"
+    echo "  ./scale-backend.sh quarkus    # Start Quarkus only (2 instances)"
+    echo "  ./scale-backend.sh micronaut  # Start Micronaut only (2 instances)"
     exit 1
 fi
 
 case "$FRAMEWORK" in
     spring)
-        echo "🚀 Scaling Spring Boot backend (2 instances)..."
-        docker-compose up -d spring-boot-app-1 spring-boot-app-2
+        echo "🚀 Starting Spring Boot backend (2 instances)..."
+        docker-compose -f docker-compose.yml -f docker-compose.spring.yml up -d --build
         ;;
     quarkus)
-        echo "⚡ Scaling Quarkus backend (2 instances)..."
-        docker-compose up -d quarkus-app-1 quarkus-app-2
+        echo "⚡ Starting Quarkus backend (2 instances)..."
+        docker-compose -f docker-compose.yml -f docker-compose.quarkus.yml up -d --build
         ;;
     micronaut)
-        echo "🔥 Scaling Micronaut backend (2 instances)..."
-        docker-compose up -d micronaut-app-1 micronaut-app-2
+        echo "🔥 Starting Micronaut backend (2 instances)..."
+        docker-compose -f docker-compose.yml -f docker-compose.micronaut.yml up -d --build
         ;;
     *)
         echo "❌ Unknown framework: $FRAMEWORK"
@@ -36,7 +36,7 @@ case "$FRAMEWORK" in
 esac
 
 echo ""
-echo "✅ Backend scaled successfully!"
+echo "✅ Backend started successfully!"
 echo ""
 echo "📊 Container Status:"
-docker-compose ps | grep $FRAMEWORK
+docker-compose -f docker-compose.yml -f docker-compose.$FRAMEWORK.yml ps

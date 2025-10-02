@@ -54,30 +54,43 @@ Esta infraestrutura fornece:
 
 ## 🚀 Como Usar
 
-### 1. Construir e Iniciar Todos os Serviços
+### 1. Iniciar TODOS os Backends (6 instâncias)
 
 ```bash
 cd docker-infrastructure
-docker-compose up --build
+./start-all.sh
 ```
 
-### 2. Iniciar em Background
-
-```bash
-docker-compose up -d
-```
-
-### 3. Escalar Apenas Backend Específico
+### 2. Iniciar Apenas UM Backend Específico
 
 ```bash
 # Apenas Spring Boot (2 instâncias)
-docker-compose up -d spring-boot-app-1 spring-boot-app-2
+./start-spring.sh
 
 # Apenas Quarkus (2 instâncias)
-docker-compose up -d quarkus-app-1 quarkus-app-2
+./start-quarkus.sh
 
 # Apenas Micronaut (2 instâncias)
-docker-compose up -d micronaut-app-1 micronaut-app-2
+./start-micronaut.sh
+```
+
+### 3. Uso Manual com docker-compose
+
+```bash
+# Spring Boot apenas
+docker-compose -f docker-compose.yml -f docker-compose.spring.yml up -d
+
+# Quarkus apenas
+docker-compose -f docker-compose.yml -f docker-compose.quarkus.yml up -d
+
+# Micronaut apenas
+docker-compose -f docker-compose.yml -f docker-compose.micronaut.yml up -d
+
+# Combinar múltiplos backends
+docker-compose -f docker-compose.yml \
+               -f docker-compose.spring.yml \
+               -f docker-compose.quarkus.yml \
+               up -d
 ```
 
 ### 4. Ver Logs
@@ -142,22 +155,45 @@ curl http://localhost/api/micronaut/customers
 | **MySQL** | 3306 | localhost:3306 |
 | **Redis** | 6379 | localhost:6379 |
 
-## 📦 Estrutura de Pastas
+## 📦 Estrutura de Pastas (Modular)
 
 ```
 docker-infrastructure/
-├── docker-compose.yml         # Configuração principal
+├── docker-compose.yml              # Base: MySQL, Redis, Nginx
+├── docker-compose.spring.yml      # Spring Boot (2 instâncias)
+├── docker-compose.quarkus.yml     # Quarkus (2 instâncias)
+├── docker-compose.micronaut.yml   # Micronaut (2 instâncias)
+│
+├── start-all.sh                   # Inicia TODOS os backends
+├── start-spring.sh                # Inicia apenas Spring Boot
+├── start-quarkus.sh               # Inicia apenas Quarkus
+├── start-micronaut.sh             # Inicia apenas Micronaut
+├── stop-all.sh                    # Para tudo
+├── scale-backend.sh               # Script genérico
+│
 ├── nginx/
-│   └── nginx.conf            # Configuração Nginx (load balancer)
+│   └── nginx.conf                 # Configuração Nginx (load balancer)
 ├── mysql/
-│   └── init.sql              # Script de inicialização do banco
+│   └── init.sql                   # Script de inicialização do banco
 ├── backend/
 │   ├── Dockerfile.spring-boot
 │   ├── Dockerfile.quarkus
 │   └── Dockerfile.micronaut
 └── frontend/
-    └── dist/                 # Build do Angular (copiar aqui)
+    └── dist/                      # Build do Angular (copiar aqui)
 ```
+
+### 🎯 Arquitetura Modular
+
+A infraestrutura é **modular**: cada backend tem seu próprio arquivo `docker-compose`. Isso permite:
+
+- ✅ Iniciar apenas o backend que você precisa
+- ✅ Economizar recursos (não precisa rodar todos)
+- ✅ Testes isolados por framework
+- ✅ Combinar backends conforme necessário
+- ✅ Manutenção simplificada
+
+**Exemplo**: Se você só trabalha com Spring Boot, use apenas `docker-compose.spring.yml`!
 
 ## 🔧 Configuração
 

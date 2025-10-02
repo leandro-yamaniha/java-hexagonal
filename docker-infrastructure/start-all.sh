@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Start All Services Script
-# This script starts the complete infrastructure
+# This script starts the complete infrastructure with ALL backends
 
-echo "🚀 Starting Restaurant Management Infrastructure..."
+echo "🚀 Starting Restaurant Management Infrastructure (ALL BACKENDS)..."
 echo ""
 
 # Check if docker-compose is installed
@@ -12,9 +12,13 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-# Build and start all services
+# Build and start all services (base + all backends)
 echo "📦 Building and starting all services..."
-docker-compose up -d --build
+docker-compose -f docker-compose.yml \
+               -f docker-compose.spring.yml \
+               -f docker-compose.quarkus.yml \
+               -f docker-compose.micronaut.yml \
+               up -d --build
 
 # Wait for services to be healthy
 echo ""
@@ -24,7 +28,11 @@ sleep 10
 # Check service status
 echo ""
 echo "📊 Service Status:"
-docker-compose ps
+docker-compose -f docker-compose.yml \
+               -f docker-compose.spring.yml \
+               -f docker-compose.quarkus.yml \
+               -f docker-compose.micronaut.yml \
+               ps
 
 # Show useful URLs
 echo ""
@@ -40,6 +48,6 @@ echo "   Redis:        localhost:6379"
 echo ""
 echo "📋 Useful Commands:"
 echo "   View logs:    docker-compose logs -f"
-echo "   Stop all:     docker-compose down"
+echo "   Stop all:     ./stop-all.sh"
 echo "   Restart:      docker-compose restart"
 echo ""
