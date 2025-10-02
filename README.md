@@ -361,7 +361,68 @@ java -jar micronaut-app/target/micronaut-app-1.0.0.jar
 - **Startup Metrics**: http://localhost:8083/api/v1/startup/metrics
 - **Status**: ✅ Fully functional
 
-### 🎯 Quick Start - All Three Frameworks
+### 🎬 Startup Scripts (Recommended)
+
+We provide convenient bash scripts for easy application management:
+
+#### Start All Applications
+```bash
+# Start all three backends simultaneously
+./scripts/start-all-backends.sh
+```
+
+#### Start Individual Applications
+```bash
+# Start Spring Boot only
+./scripts/start-spring-boot.sh
+
+# Start Quarkus only
+./scripts/start-quarkus.sh
+
+# Start Micronaut only
+./scripts/start-micronaut.sh
+```
+
+#### Development Mode (Hot Reload)
+```bash
+# Start all applications with hot reload enabled
+./scripts/start-dev-mode.sh
+```
+
+#### Stop All Applications
+```bash
+# Gracefully stop all running backends
+./scripts/stop-all-backends.sh
+```
+
+#### Check Status
+```bash
+# See which applications are currently running
+./scripts/status.sh
+```
+
+**Features:**
+- ✅ **Complete Docker automation** (Starts Docker Desktop if closed!)
+- ✅ **Automatic Docker Compose startup** (MySQL + Redis started automatically!)
+- ✅ Automatic port cleanup (kills existing processes)
+- ✅ Prerequisites checking (Java, MySQL, Redis)
+- ✅ Color-coded output for better readability
+- ✅ Log files generated in `logs/` directory
+- ✅ Memory optimized JVM settings
+- ✅ Health checks after startup
+- ✅ Waits for MySQL to be healthy before starting apps
+
+📖 **See [scripts/README.md](./scripts/README.md) for complete documentation**
+
+> 💡 **Zero manual steps!** All scripts automatically:
+> 1. Start Docker Desktop (if not running)
+> 2. Start MySQL and Redis via docker-compose
+> 3. Wait for services to be healthy
+> 4. Start your application
+
+**Just run one command and everything works!** 🎉
+
+### 🎯 Quick Start - All Three Frameworks (Manual)
 
 ```bash
 # 1. Start infrastructure (MySQL + Redis)
