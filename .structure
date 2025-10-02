@@ -1,28 +1,29 @@
 restaurant-management/
 ├── README.md                    # 📘 Único documento na raiz
 │
-├── docs/                        # 📚 TODA a documentação (17 arquivos)
-│   ├── README.md                   # Índice da documentação
-│   ├── DOCUMENTATION_INDEX.md      # Catálogo completo
+├── docs/                        # 📚 Documentação organizada por componente
+│   ├── README.md                   # Índice principal da documentação
 │   │
-│   ├── EXECUTIVE_SUMMARY.md        # Resumo executivo
-│   ├── PROJECT_STRUCTURE.md        # Estrutura do projeto
-│   ├── POLYGLOT_STRUCTURE.md       # Estrutura polyglot
-│   ├── SETUP.md                    # Guia de configuração
+│   ├── EXECUTIVE_SUMMARY.md        # Resumo executivo completo
+│   ├── PROJECT_STRUCTURE.md        # Estrutura do projeto & polyglot
+│   ├── SETUP.md                    # Guia de instalação/configuração
 │   │
-│   ├── ARCHITECTURE.md             # Arquitetura hexagonal
-│   ├── ARCHITECTURE_DIAGRAMS.md    # Diagramas visuais
-│   ├── ARCHITECTURE_STATUS_REPORT.md
-│   ├── ARCHITECTURE_TESTS_SUMMARY.md
+│   ├── backend/                    # 📂 Documentação técnica Backend (12 arquivos)
+│   │   ├── README.md                   # Índice backend
+│   │   ├── ARCHITECTURE.md             # Arquitetura hexagonal
+│   │   ├── ARCHITECTURE_DIAGRAMS.md    # Diagramas visuais
+│   │   ├── ARCHITECTURE_STATUS_REPORT.md
+│   │   ├── ARCHITECTURE_TESTS_SUMMARY.md
+│   │   ├── DTO_PATTERN_GUIDE.md        # Guia de DTOs
+│   │   ├── DTO_IMPLEMENTATION_COMPLETE.md
+│   │   ├── IMPLEMENTATION_SUMMARY.md
+│   │   ├── FRAMEWORK_ARCHITECTURE_TESTS.md
+│   │   ├── FRAMEWORK_STRUCTURE_TESTS_SUMMARY.md
+│   │   ├── QUARKUS_VALIDATION_REPORT.md
+│   │   └── STARTUP_TIMES.md
 │   │
-│   ├── DTO_PATTERN_GUIDE.md        # Guia de DTOs
-│   ├── DTO_IMPLEMENTATION_COMPLETE.md
-│   ├── IMPLEMENTATION_SUMMARY.md
-│   │
-│   ├── FRAMEWORK_ARCHITECTURE_TESTS.md
-│   ├── FRAMEWORK_STRUCTURE_TESTS_SUMMARY.md
-│   ├── QUARKUS_VALIDATION_REPORT.md
-│   └── STARTUP_TIMES.md            # Performance
+│   └── frontend/                   # 📂 Documentação Frontend
+│       └── README.md                   # Guia frontend (Angular)
 │
 ├── backend/                     # ☕ Backend Java (auto-contido)
 │   ├── pom.xml                     # ROOT POM (sem parent)
