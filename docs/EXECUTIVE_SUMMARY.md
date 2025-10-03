@@ -19,61 +19,97 @@ Sistema de gerenciamento de restaurante construído com **arquitetura hexagonal 
 
 ---
 
-## 🏗️ Arquitetura
+## 🏗️ Arquitetura Hexagonal
 
 ```mermaid
-graph TB
-    subgraph "Presentation Layer"
-        A[Spring Boot<br/>Controllers + DTOs]
-        B[Quarkus<br/>Resources + DTOs]
-        F[Micronaut<br/>Controllers + DTOs]
-    end
+flowchart TB
+    %% Driving Adapters (Top)
+    Spring[🟢 Spring Boot<br/>REST API]
+    Quarkus[⚡ Quarkus<br/>REST API]
+    Micronaut[🔥 Micronaut<br/>REST API]
     
-    subgraph "Application Layer"
-        C[Use Cases<br/>Pure Java]
-    end
+    %% Input Ports
+    PortIn[📍 Input Ports<br/>CreateCustomer, GetCustomer, etc.]
     
-    subgraph "Domain Layer"
-        D[Entities<br/>Pure Java<br/>NO Frameworks]
-    end
+    %% Hexagon Core
+    Core["⬡ HEXAGON CORE<br/>━━━━━━━━━━━━━━<br/>Domain Entities<br/>Business Logic<br/>Use Cases<br/>━━━━━━━━━━━━━━<br/>Pure Java - NO Frameworks"]
     
-    subgraph "Infrastructure Layer"
-        E[JPA + Redis<br/>Repositories]
-    end
+    %% Output Ports
+    PortOut[📍 Output Ports<br/>Repository Interfaces<br/>CustomerRepository, CacheRepository]
     
-    A --> C
-    B --> C
-    F --> C
-    C --> D
-    E --> D
+    %% Driven Adapters (Bottom)
+    JPA[🗄️ JPA Adapter<br/>MySQL Persistence]
+    Redis[💾 Redis Adapter<br/>Cache Layer]
     
-    style D fill:#e8f5e9,stroke:#4caf50,stroke-width:3px
+    %% Connections
+    Spring --> PortIn
+    Quarkus --> PortIn
+    Micronaut --> PortIn
+    
+    PortIn --> Core
+    Core --> PortOut
+    
+    PortOut --> JPA
+    PortOut --> Redis
+    
+    %% Styles
+    style Core fill:none,stroke:#4caf50,stroke-width:4px
+    style Spring fill:none,stroke:#1976D2,stroke-width:2px
+    style Quarkus fill:none,stroke:#C2185B,stroke-width:2px
+    style Micronaut fill:none,stroke:#7B1FA2,stroke-width:2px
+    style PortIn fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style PortOut fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style JPA fill:none,stroke:#F57C00,stroke-width:2px
+    style Redis fill:none,stroke:#F57C00,stroke-width:2px
 ```
 
-### Camadas
+### Camadas Hexagonais
 
-1. **Domain** (🔵 Puro) - Entidades e lógica de negócio
-2. **Application** (🔵 Puro) - Casos de uso
-3. **Infrastructure** (🟡 Adaptadores) - JPA, Redis, Mappers
-4. **Presentation** (🟢 Frameworks) - Spring Boot, Quarkus, Micronaut
+1. **⬡ Hexagon Core** (🟢 Puro) - Domain + Use Cases + Business Logic
+2. **📍 Ports** (🟣 Interfaces) - Input Ports + Output Ports
+3. **🔌 Driving Adapters** (🔵 Input) - Spring Boot, Quarkus, Micronaut REST APIs
+4. **🔧 Driven Adapters** (🟠 Output) - JPA (MySQL), Redis (Cache)
 
 ---
 
-## 🎨 Padrão DTO
+## 🎨 Padrão DTO - Fluxo de Dados
 
-### Implementação
-
+```mermaid
+flowchart LR
+    Client[👤 Client<br/>JSON Request]
+    Controller[🌐 Controller<br/>Spring/Quarkus/Micronaut]
+    DTO[📦 DTO<br/>Jackson Annotations]
+    Mapper[🔄 Mapper<br/>DTO ↔ Entity]
+    Entity[⬡ Domain Entity<br/>Pure Java<br/>NO Frameworks]
+    UseCase[💼 Use Case<br/>Business Logic]
+    
+    Client -->|JSON| Controller
+    Controller -->|Deserialize| DTO
+    DTO -->|toEntity| Mapper
+    Mapper -->|Pure Object| Entity
+    Entity -->|Process| UseCase
+    UseCase -->|Result| Entity
+    Entity -->|toDTO| Mapper
+    Mapper -->|Serialize| DTO
+    DTO -->|JSON| Client
+    
+    style Client fill:none,stroke:#1976D2,stroke-width:2px
+    style Controller fill:none,stroke:#1976D2,stroke-width:2px
+    style DTO fill:none,stroke:#FF6F00,stroke-width:2px
+    style Mapper fill:none,stroke:#7B1FA2,stroke-width:2px
+    style Entity fill:none,stroke:#4caf50,stroke-width:3px
+    style UseCase fill:none,stroke:#4caf50,stroke-width:2px
 ```
-Client (JSON) 
-    ↓
-Controller (Spring Boot)
-    ↓
-DTO (Jackson) ← Serialização isolada
-    ↓
-Mapper
-Domain Entity (Pure Java) ← Sem frameworks
-    ↓
-Business Logic
+
+### Benefícios do Padrão
+
+- ✅ **Isolamento**: Jackson apenas nos DTOs
+- ✅ **Domínio Puro**: Entidades sem anotações
+- ✅ **Testabilidade**: Domain testável sem frameworks
+- ✅ **Flexibilidade**: Fácil trocar serialização
+
+## 🧪 Testes de Arquitetura
+
 ### Resultados
 
 ```
@@ -98,32 +134,70 @@ TOTAL:                         44/44  (100%)
 
 ## 📊 Estrutura do Projeto
 
-```
+```text
 restaurant-management/
-├── domain/                    # 🔵 Domínio puro
-│   ├── entity/               # Customer, MenuItem, Order, RestaurantTable
-│   └── valueobject/          # Money, MenuCategory, OrderStatus, TableStatus
+├── backend/                      # 🔧 Backend Java Modules
+│   ├── domain/                  # ⬡ Domínio puro (Pure Java)
+│   │   ├── entity/             # Customer, MenuItem, Order, RestaurantTable
+│   │   └── valueobject/        # Money, MenuCategory, OrderStatus, TableStatus
+│   │
+│   ├── application/            # 📍 Casos de uso (Ports)
+│   │   ├── port/in/           # Input Ports (Use Case Interfaces)
+│   │   ├── port/out/          # Output Ports (Repository Interfaces)
+│   │   └── service/           # Use Case Implementations
+│   │
+│   ├── infrastructure/         # 🔧 Driven Adapters
+│   │   ├── persistence/       # JPA repositories (MySQL)
+│   │   └── cache/            # Redis cache
+│   │
+│   ├── spring-boot-app/       # 🔌 Spring Boot Adapter (Port 8082)
+│   │   ├── controller/        # REST controllers
+│   │   ├── dto/              # DTOs with Jackson
+│   │   ├── mapper/           # Domain ↔ DTO
+│   │   └── config/           # Configurations
+│   │
+│   ├── quarkus-app/          # 🔌 Quarkus Adapter (Port 8081)
+│   │   ├── resource/         # JAX-RS resources
+│   │   ├── dto/             # DTOs with Jackson
+│   │   └── mapper/          # Domain ↔ DTO
+│   │
+│   ├── micronaut-app/        # 🔌 Micronaut Adapter (Port 8083)
+│   │   ├── controller/       # HTTP controllers
+│   │   ├── dto/             # DTOs with Jackson
+│   │   └── mapper/          # Domain ↔ DTO
+│   │
+│   └── architecture-tests/    # 🧪 ArchUnit Tests
+│       └── test/             # 44 architecture validation tests
 │
-├── application/              # 🔵 Casos de uso
-│   ├── port/in/             # Interfaces de entrada
-│   ├── port/out/            # Interfaces de saída
-│   └── service/             # Implementações
+├── frontend-angular/          # 🎨 Angular Frontend
+│   ├── src/                  # Angular application
+│   └── dist/                 # Build output
 │
-├── infrastructure/           # 🟡 Adaptadores
-│   ├── persistence/         # JPA repositories
-│   └── cache/              # Redis cache
+├── docker-infrastructure/     # 🐳 Docker Infrastructure
+│   ├── README.md             # Main infrastructure docs
+│   ├── README-spring-boot.md # Spring Boot specific
+│   ├── README-quarkus.md     # Quarkus specific
+│   ├── README-micronaut.md   # Micronaut specific
+│   ├── README-frontend.md    # Frontend specific
+│   ├── docker-compose.yml    # Base (MySQL, Redis, Nginx)
+│   ├── docker-compose.spring.yml
+│   ├── docker-compose.quarkus.yml
+│   ├── docker-compose.micronaut.yml
+│   ├── nginx/               # Nginx configurations
+│   └── start-*.sh           # Startup scripts
 │
-├── spring-boot-app/         # 🟢 Spring Boot
-│   ├── controller/          # REST controllers
-│   ├── dto/                # DTOs com Jackson
-│   ├── mapper/             # Domain ↔ DTO
-│   └── config/             # Configurações
+├── scripts-develop/          # 📜 Local Development Scripts
+│   ├── start-spring-boot.sh # Run Spring Boot locally
+│   ├── start-quarkus.sh     # Run Quarkus locally
+│   ├── start-micronaut.sh   # Run Micronaut locally
+│   ├── start-all-backends.sh # Run all backends
+│   └── start-docker.sh      # Start Docker Desktop
 │
-├── quarkus-app/            # 🟢 Quarkus
-│   └── resource/           # JAX-RS resources
-│
-└── architecture-tests/      # 🧪 Testes ArchUnit
-    └── test/               # 44 testes de arquitetura
+└── docs/                     # 📚 Documentation
+    ├── EXECUTIVE_SUMMARY.md  # This file
+    ├── ARCHITECTURE.md       # Detailed architecture
+    ├── ARCHITECTURE_DIAGRAMS.md # Visual diagrams
+    └── DTO_PATTERN_GUIDE.md  # DTO pattern guide
 ```
 
 ---
