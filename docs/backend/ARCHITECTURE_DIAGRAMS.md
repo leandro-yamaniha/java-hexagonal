@@ -416,20 +416,22 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph Presentation["🔌 Presentation Layer"]
-        DTO[CustomerDTO<br/>✅ Jackson Annotations<br/>✅ Validation<br/>✅ Serialization]
+    subgraph Presentation["Presentation Layer"]
+        DTO["CustomerDTO<br/>+ Jackson Annotations<br/>+ Validation<br/>+ Serialization"]
     end
     
-    subgraph Mapper["🔄 Mapper Layer"]
-        MAP[CustomerDTOMapper<br/>toDTO()<br/>toEntity()<br/>toCommand()]
+    subgraph Mapper["Mapper Layer"]
+        MAP["CustomerDTOMapper<br/>toDTO()<br/>toEntity()<br/>toCommand()"]
     end
     
-    subgraph Domain["⬡ Domain Layer"]
-        DOM[Customer Entity<br/>✅ Business Logic<br/>✅ Pure Java<br/>❌ No Frameworks<br/>❌ No Annotations]
+    subgraph Domain["Domain Layer"]
+        DOM["Customer Entity<br/>+ Business Logic<br/>+ Pure Java<br/>- No Frameworks<br/>- No Annotations"]
     end
     
-    DTO <-->|Convert| MAP
-    MAP <-->|Convert| DOM
+    DTO -->|toEntity| MAP
+    MAP -->|toDTO| DTO
+    MAP -->|Pure Object| DOM
+    DOM -->|Entity| MAP
     
     style Presentation fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
     style Mapper fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
