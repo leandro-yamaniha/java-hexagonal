@@ -4,6 +4,23 @@ version: '3.8'
 # Usage: docker-compose -f docker-compose.yml -f docker-compose.micronaut.yml up
 
 services:
+  # Nginx API Gateway for Micronaut
+  nginx-api-micronaut:
+    image: nginx:alpine
+    container_name: restaurant-nginx-api-micronaut
+    ports:
+      - "8083:80"
+    volumes:
+      - ./nginx/nginx-api-micronaut.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   # Micronaut Instance 1
   micronaut-app-1:
     build:
