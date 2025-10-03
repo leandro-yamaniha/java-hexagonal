@@ -14,36 +14,131 @@ Esta infraestrutura fornece:
 
 ## 🏗️ Arquitetura
 
+### Visão Geral da Infraestrutura
+
+```mermaid
+graph TB
+    Client[👤 Cliente Browser]
+    
+    subgraph Frontend["🌐 Nginx Frontend :80"]
+        FE[Serve Angular<br/>Proxy APIs]
+    end
+    
+    subgraph APIGateways["🔀 API Gateways"]
+        GW1[nginx-api-spring<br/>:8082]
+        GW2[nginx-api-quarkus<br/>:8081]
+        GW3[nginx-api-micronaut<br/>:8083]
+    end
+    
+    subgraph Backends["☕ Backend Instances"]
+        SP1[Spring Boot 1]
+        SP2[Spring Boot 2]
+        QK1[Quarkus 1]
+        QK2[Quarkus 2]
+        MN1[Micronaut 1]
+        MN2[Micronaut 2]
+    end
+    
+    subgraph Data["💾 Dados Compartilhados"]
+        DB[(MySQL<br/>:3306)]
+        Cache[(Redis<br/>:6379)]
+    end
+    
+    Client --> FE
+    FE -->|/api/spring/*| GW1
+    FE -->|/api/quarkus/*| GW2
+    FE -->|/api/micronaut/*| GW3
+    
+    GW1 -.Load Balance.-> SP1
+    GW1 -.Load Balance.-> SP2
+    GW2 -.Load Balance.-> QK1
+    GW2 -.Load Balance.-> QK2
+    GW3 -.Load Balance.-> MN1
+    GW3 -.Load Balance.-> MN2
+    
+    SP1 & SP2 & QK1 & QK2 & MN1 & MN2 --> DB
+    SP1 & SP2 & QK1 & QK2 & MN1 & MN2 --> Cache
+    
+    style Frontend fill:#E3F2FD
+    style APIGateways fill:#C8E6C9
+    style Backends fill:#FFF9C4
+    style Data fill:#F3E5F5
 ```
-┌─────────────────────────────────────────────┐
-│           Cliente (Browser)                  │
-└───────────────────┬─────────────────────────┘
-                    │ HTTP :80
-                    ▼
-        ┌───────────────────────┐
-        │   Nginx Frontend       │
-        │   - Serve Angular      │
-        │   - Proxy /api/*       │
-        └──────────┬──────────────┘
-                   │ :8080
-                   ▼
-        ┌───────────────────────┐
-        │   Nginx API Gateway    │
-        │   - Load Balancer      │
-        │   - API Routing        │
-        └──────┬────────┬────────┘
-               │        │
-       ┌───────┴──┐  ┌─┴────────┐
-       ▼          ▼  ▼          ▼
-   [Spring 1] [Spring 2]
-   [Quarkus 1] [Quarkus 2]
-   [Micronaut 1] [Micronaut 2]
-       │          │
-       └─────┬────┘
-             ▼
-   ┌──────────────────┐
-   │ MySQL  │  Redis  │
-   └──────────────────┘
+
+### Arquitetura Modular (Docker Compose)
+
+```mermaid
+graph LR
+    subgraph Base["📦 docker-compose.yml<br/>(Base - Sempre Ativo)"]
+        MySQL[(MySQL)]
+        Redis[(Redis)]
+        Frontend[Nginx Frontend]
+    end
+    
+    subgraph Spring["☕ docker-compose.spring.yml<br/>(Opcional)"]
+        SpringGW[nginx-api-spring]
+        Spring1[Spring Boot 1]
+        Spring2[Spring Boot 2]
+    end
+    
+    subgraph Quarkus["⚡ docker-compose.quarkus.yml<br/>(Opcional)"]
+        QuarkusGW[nginx-api-quarkus]
+        Quarkus1[Quarkus 1]
+        Quarkus2[Quarkus 2]
+    end
+    
+    subgraph Micronaut["🔥 docker-compose.micronaut.yml<br/>(Opcional)"]
+        MicronautGW[nginx-api-micronaut]
+        Micronaut1[Micronaut 1]
+        Micronaut2[Micronaut 2]
+    end
+    
+    Frontend -.-> SpringGW
+    Frontend -.-> QuarkusGW
+    Frontend -.-> MicronautGW
+    
+    SpringGW --> Spring1 & Spring2
+    QuarkusGW --> Quarkus1 & Quarkus2
+    MicronautGW --> Micronaut1 & Micronaut2
+    
+    Spring1 & Spring2 --> MySQL & Redis
+    Quarkus1 & Quarkus2 --> MySQL & Redis
+    Micronaut1 & Micronaut2 --> MySQL & Redis
+    
+    style Base fill:#E3F2FD
+    style Spring fill:#C8E6C9
+    style Quarkus fill:#F8BBD0
+    style Micronaut fill:#E1BEE7
+```
+
+### Cenário: Apenas Spring Boot
+
+```mermaid
+graph TB
+    Client[👤 Cliente]
+    Frontend[🌐 Nginx Frontend<br/>:80]
+    SpringGW[🔀 nginx-api-spring<br/>:8082]
+    
+    subgraph SpringCluster["Spring Boot Cluster"]
+        SP1[Spring Boot 1<br/>:8080]
+        SP2[Spring Boot 2<br/>:8080]
+    end
+    
+    DB[(MySQL<br/>:3306)]
+    Cache[(Redis<br/>:6379)]
+    
+    Client --> Frontend
+    Frontend -->|/api/spring/*| SpringGW
+    SpringGW -.Round Robin.-> SP1
+    SpringGW -.Round Robin.-> SP2
+    SP1 & SP2 --> DB & Cache
+    
+    Note[💡 Apenas 6 containers<br/>Economia: ~55% recursos]
+    
+    style Frontend fill:#E3F2FD
+    style SpringGW fill:#C8E6C9
+    style SpringCluster fill:#FFF9C4
+    style Note fill:#FFECB3
 ```
 
 ## 🎨 Setup do Frontend (IMPORTANTE!)
