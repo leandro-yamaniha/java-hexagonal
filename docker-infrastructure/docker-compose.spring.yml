@@ -1,0 +1,66 @@
+version: '3.8'
+
+# Spring Boot Backend Configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.spring.yml up
+
+services:
+  # Nginx API Gateway for Spring Boot
+  nginx-api-spring:
+    image: nginx:alpine
+    container_name: restaurant-nginx-api-spring
+    ports:
+      - "8082:80"
+    volumes:
+      - ./nginx/nginx-api-spring.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Spring Boot Instance 1
+  spring-boot-app-1:
+    build:
+      context: ../backend/spring-boot-app
+      dockerfile: Dockerfile
+    container_name: spring-boot-app-1
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/restaurant_db
+      SPRING_DATASOURCE_USERNAME: restaurant_user
+      SPRING_DATASOURCE_PASSWORD: restaurant123
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SERVER_PORT: 8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+
+  # Spring Boot Instance 2
+  spring-boot-app-2:
+    build:
+      context: ../backend/spring-boot-app
+      dockerfile: Dockerfile
+    container_name: spring-boot-app-2
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/restaurant_db
+      SPRING_DATASOURCE_USERNAME: restaurant_user
+      SPRING_DATASOURCE_PASSWORD: restaurant123
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SERVER_PORT: 8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - restaurant-network
+    restart: unless-stopped

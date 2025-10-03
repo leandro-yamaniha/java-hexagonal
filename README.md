@@ -2,7 +2,9 @@
 
 A comprehensive restaurant management system built with **hexagonal architecture** (ports and adapters pattern), supporting **three frameworks** (Spring Boot, Quarkus, and Micronaut) with complete framework independence in core modules.
 
-> 📋 **Quick Start**: See [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) for a complete overview of the project.
+> 📋 **Quick Start**: See [docs/EXECUTIVE_SUMMARY.md](./docs/EXECUTIVE_SUMMARY.md) for a complete overview of the project.
+> 
+> 📚 **Documentation**: All documentation is in [docs/](./docs/) - See [docs/README.md](./docs/README.md) for complete navigation.
 
 ## 🏗️ Architecture
 
@@ -10,14 +12,20 @@ This project implements a **pure hexagonal architecture** with strict separation
 
 ```
 restaurant-management/
-├── domain/                     # 🔵 Core business logic (pure Java, no frameworks)
-├── infrastructure/            # 🟡 External adapters (JPA, Redis, pure implementations)
-├── spring-boot-app/          # 🟢 Spring Boot REST API (port 8082) ✅
-├── quarkus-app/              # 🟢 Quarkus REST API (port 8081) ✅
-├── micronaut-app/            # 🟢 Micronaut REST API (port 8083) ✅
-├── architecture-tests/        # 🧪 ArchUnit tests (75 tests validating architecture)
-└── docker/                   # 🐳 Docker configurations (MySQL + Redis)
+├── backend/                    # 🔧 Backend Java modules
+│   ├── domain/                # 🔵 Core business logic (pure Java, no frameworks)
+│   ├── application/           # 🟣 Use cases and ports
+│   ├── infrastructure/        # 🟡 External adapters (JPA, Redis)
+│   ├── spring-boot-app/      # 🟢 Spring Boot REST API (port 8082) ✅
+│   ├── quarkus-app/          # 🟢 Quarkus REST API (port 8081) ✅
+│   ├── micronaut-app/        # 🟢 Micronaut REST API (port 8083) ✅
+│   └── architecture-tests/    # 🧪 ArchUnit tests (75 tests)
+├── frontend-angular/          # 🎨 Angular frontend
+├── docker-infrastructure/     # 🐳 Docker (complete infrastructure)
+└── scripts-develop/           # 📜 Local development scripts
 ```
+
+> 📋 See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for detailed structure documentation
 
 ### 🎯 Three Frameworks, One Architecture
 
@@ -29,18 +37,20 @@ This project demonstrates the **true power of hexagonal architecture** by suppor
 | **Quarkus** | 8081 | 3.15.1 | **Vert.x** (reactive) | 4 | 6 | ✅ Swagger UI | ⚠️ **Experimental** | ✅ Active |
 | **Micronaut** | 8083 | 4.6.3 | **Netty** (async) | 4 | 4 | ✅ Swagger UI | 🔴 **Básico** | ✅ Active |
 
-### 📊 Visual Diagrams
+### 📊 Backend Documentation
 
-For detailed architecture diagrams and flow charts, see:
-- **[ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md)** - Complete visual documentation with Mermaid diagrams
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Detailed architecture documentation
-- **[ARCHITECTURE_TESTS_SUMMARY.md](./ARCHITECTURE_TESTS_SUMMARY.md)** - Architecture tests summary
+For detailed backend architecture and implementation documentation, see the **[backend/](./backend/)** folder:
+
+- **[backend/README.md](./backend/README.md)** - Backend overview and documentation index
+- **[backend/ARCHITECTURE.md](./backend/ARCHITECTURE.md)** - Detailed architecture documentation
+- **[backend/ARCHITECTURE_DIAGRAMS.md](./backend/ARCHITECTURE_DIAGRAMS.md)** - Visual diagrams with Mermaid
+- **[backend/DTO_PATTERN_GUIDE.md](./backend/DTO_PATTERN_GUIDE.md)** - Complete DTO pattern guide
+- **[backend/STARTUP_TIMES.md](./backend/STARTUP_TIMES.md)** - Performance comparison
 
 ### 🎨 DTO Pattern
 
-This project uses the **DTO (Data Transfer Object) pattern** to keep the domain layer pure and free from serialization concerns:
+This project uses the **DTO (Data Transfer Object) pattern** to keep the domain layer pure:
 
-- **[DTO_PATTERN_GUIDE.md](./DTO_PATTERN_GUIDE.md)** - Complete guide with examples and best practices
 - **Domain Layer**: Pure Java entities without framework annotations
 - **Presentation Layer**: DTOs with Jackson annotations for JSON serialization
 - **Mappers**: Convert between Domain entities and DTOs
@@ -411,7 +421,7 @@ We provide convenient bash scripts for easy application management:
 - ✅ Health checks after startup
 - ✅ Waits for MySQL to be healthy before starting apps
 
-📖 **See [scripts/README.md](./scripts/README.md) for complete documentation**
+📖 **See [scripts-develop/README.md](./scripts-develop/README.md) for complete documentation**
 
 > 💡 **Zero manual steps!** All scripts automatically:
 > 1. Start Docker Desktop (if not running)
@@ -510,38 +520,86 @@ GET    /api/v1/menu-items/category/{category} # Get by category
 
 ## 🚀 Current Status
 
-### ✅ Both Applications Fully Operational
+### ✅ All Three Frameworks Fully Operational
 
 | Application | Port | Status | Database | Cache | API Endpoints |
 |-------------|------|--------|----------|-------|---------------|
 | **Spring Boot** | 8082 | ✅ Running | ✅ MySQL Connected | ✅ Redis Connected | ✅ All Working |
 | **Quarkus** | 8081 | ✅ Running | ✅ MySQL Connected | ✅ Redis Connected | ✅ All Working |
+| **Micronaut** | 8083 | ✅ Running | ✅ MySQL Connected | ✅ Redis Connected | ✅ All Working |
 
 ### 🏗️ Architecture Achievements
 
 - ✅ **Hexagonal Architecture**: Clean separation of domain, application, and infrastructure layers
-- ✅ **Framework Independence**: Core business logic shared between Spring Boot and Quarkus
-- ✅ **Database Integration**: Both applications connected to MySQL with sample data
-- ✅ **Caching Layer**: Redis integration for performance optimization
+- ✅ **Framework Independence**: Core business logic shared across Spring Boot, Quarkus, and Micronaut
+- ✅ **Three Framework Implementations**: Same domain logic, different framework adapters
+- ✅ **Database Integration**: All three applications connected to MySQL with shared data
+- ✅ **Caching Layer**: Redis integration for performance optimization across all frameworks
 - ✅ **REST APIs**: Complete CRUD operations for customers and menu items
-- ✅ **Dependency Injection**: Proper CDI configuration in both frameworks
+- ✅ **Dependency Injection**: Proper DI configuration in all frameworks (Spring DI, CDI, Micronaut DI)
 
 ### 🔧 Technical Implementation
 
-- **Domain Layer**: Pure Java entities and value objects
-- **Application Layer**: Use cases and service implementations
-- **Infrastructure Layer**: JPA repositories, Redis cache, database entities
+- **Domain Layer**: Pure Java entities and value objects (framework-agnostic)
+- **Application Layer**: Use cases and service implementations (shared)
+- **Infrastructure Layer**: JPA repositories, Redis cache, database entities (shared)
 - **Spring Boot Module**: REST controllers with Spring Boot configuration
 - **Quarkus Module**: JAX-RS resources with CDI configuration
+- **Micronaut Module**: HTTP controllers with Micronaut annotations
 
 ### 📊 Verification Results
 
-Both applications successfully serve the same data from the shared MySQL database:
-- **Customers**: 3 records available via both APIs
-- **Menu Items**: 5 records available via both APIs
-- **Health Checks**: Spring Boot actuator health endpoint operational
-- **Database**: MySQL connection validated on both applications
-- **Cache**: Redis connectivity confirmed
+All three applications successfully serve the same data from the shared MySQL database:
+- **Customers**: 3 records available via all APIs (ports 8081, 8082, 8083)
+- **Menu Items**: 5 records available via all APIs
+- **Health Checks**: All frameworks provide health endpoints
+- **Database**: MySQL connection validated on all three applications
+- **Cache**: Redis connectivity confirmed across all frameworks
+
+## 📚 Reference Documentation
+
+### Java & Core Technologies
+
+| Technology | Version | Documentation |
+|------------|---------|---------------|
+| **Java** | 21 | [Oracle Java 21 Docs](https://docs.oracle.com/en/java/javase/21/) |
+| **Maven** | 3.9+ | [Maven Documentation](https://maven.apache.org/guides/) |
+| **JPA/Hibernate** | 6.x | [Hibernate ORM Documentation](https://hibernate.org/orm/documentation/6.5/) |
+| **MySQL** | 8.0 | [MySQL 8.0 Reference Manual](https://dev.mysql.com/doc/refman/8.0/en/) |
+| **Redis** | Latest | [Redis Documentation](https://redis.io/docs/) |
+
+### Backend Frameworks
+
+| Framework | Version | Official Docs | Getting Started |
+|-----------|---------|---------------|-----------------|
+| **Spring Boot** | 3.5.6 | [Spring Boot Docs](https://docs.spring.io/spring-boot/index.html) | [Spring Boot Reference](https://docs.spring.io/spring-boot/reference/) |
+| **Quarkus** | 3.15.1 | [Quarkus Guides](https://quarkus.io/guides/) | [Getting Started Guide](https://quarkus.io/get-started/) |
+| **Micronaut** | 4.6.3 | [Micronaut Documentation](https://docs.micronaut.io/latest/guide/) | [Quick Start](https://guides.micronaut.io/latest/micronaut-creating-first-graal-app.html) |
+
+### Frontend
+
+| Technology | Version | Documentation |
+|------------|---------|---------------|
+| **Angular** | 18+ | [Angular Documentation](https://angular.dev/overview) |
+| **TypeScript** | Latest | [TypeScript Docs](https://www.typescriptlang.org/docs/) |
+| **npm** | Latest | [npm Documentation](https://docs.npmjs.com/) |
+
+### Architecture & Patterns
+
+| Topic | Resource |
+|-------|----------|
+| **Hexagonal Architecture** | [Alistair Cockburn's Article](https://alistair.cockburn.us/hexagonal-architecture/) |
+| **Ports and Adapters** | [Herberto Graca's Blog](https://herbertograca.com/2017/09/14/ports-adapters-architecture/) |
+| **Clean Architecture** | [Robert C. Martin's Blog](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) |
+| **ArchUnit** | [ArchUnit User Guide](https://www.archunit.org/userguide/html/000_Index.html) |
+
+### DevOps & Tools
+
+| Tool | Documentation |
+|------|---------------|
+| **Docker** | [Docker Documentation](https://docs.docker.com/) |
+| **Docker Compose** | [Compose Specification](https://docs.docker.com/compose/) |
+| **Git** | [Git Documentation](https://git-scm.com/doc) |
 
 ## License
 

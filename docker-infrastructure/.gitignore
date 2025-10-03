@@ -1,0 +1,12 @@
+# Environment variables
+.env
+
+# Frontend build (will be copied here)
+frontend/dist/
+
+# Logs
+logs/
+*.log
+
+# Docker volumes
+volumes/

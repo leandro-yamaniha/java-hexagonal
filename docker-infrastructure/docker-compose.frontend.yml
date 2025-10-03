@@ -1,0 +1,28 @@
+version: '3.8'
+
+# Angular Frontend Configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.frontend.yml up
+
+services:
+  # Angular Frontend Builder
+  frontend-builder:
+    build:
+      context: ../frontend-angular
+      dockerfile: Dockerfile
+      target: builder
+    container_name: frontend-builder
+    volumes:
+      - frontend-dist:/app/dist
+    networks:
+      - restaurant-network
+
+  # Override nginx-frontend to depend on frontend builder
+  nginx-frontend:
+    depends_on:
+      - frontend-builder
+    volumes:
+      - frontend-dist:/usr/share/nginx/html:ro
+
+volumes:
+  frontend-dist:
+    driver: local
