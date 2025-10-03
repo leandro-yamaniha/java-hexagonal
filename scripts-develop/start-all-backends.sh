@@ -131,13 +131,17 @@ else
     echo -e "${GREEN}✅ Docker Desktop is running${NC}"
 fi
 
-# Start Docker infrastructure first
+# Start Docker infrastructure first (MySQL + Redis only)
 echo -e "${BLUE}🐳 Starting Docker infrastructure (MySQL + Redis)...${NC}"
-cd "$PROJECT_DIR/docker"
+cd "$PROJECT_DIR/docker-infrastructure"
 
-if ! docker compose ps | grep -q "running"; then
+# Check if MySQL and Redis are already running
+if docker compose ps mysql 2>/dev/null | grep -q "running" && \
+   docker compose ps redis 2>/dev/null | grep -q "running"; then
+    echo -e "${GREEN}✅ MySQL and Redis are already running${NC}"
+else
     echo -e "${BLUE}🚀 Starting MySQL and Redis via docker-compose...${NC}"
-    docker compose up -d
+    docker compose up -d mysql redis
     echo -e "${BLUE}⏳ Waiting for services to be ready...${NC}"
     sleep 10
     

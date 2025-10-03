@@ -21,8 +21,8 @@ restaurant-management/
 │   ├── micronaut-app/        # 🟢 Micronaut REST API (port 8083) ✅
 │   └── architecture-tests/    # 🧪 ArchUnit tests (75 tests)
 ├── frontend-angular/          # 🎨 Angular frontend
-├── docker/                    # 🐳 Docker (MySQL + Redis)
-└── scripts/                   # 📜 Automation scripts
+├── docker-infrastructure/     # 🐳 Docker (complete infrastructure)
+└── scripts-develop/           # 📜 Local development scripts
 ```
 
 > 📋 See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for detailed structure documentation
@@ -421,7 +421,7 @@ We provide convenient bash scripts for easy application management:
 - ✅ Health checks after startup
 - ✅ Waits for MySQL to be healthy before starting apps
 
-📖 **See [scripts/README.md](./scripts/README.md) for complete documentation**
+📖 **See [scripts-develop/README.md](./scripts-develop/README.md) for complete documentation**
 
 > 💡 **Zero manual steps!** All scripts automatically:
 > 1. Start Docker Desktop (if not running)
