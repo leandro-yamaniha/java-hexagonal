@@ -3,55 +3,61 @@
 ## 🏗️ Arquitetura Hexagonal
 
 ```mermaid
-graph TB
-    subgraph "Presentation Layer"
-        A[Spring Boot<br/>Controllers] 
-        B[Quarkus<br/>Resources]
-        C[DTOs]
+flowchart TB
+    subgraph Driving["🔌 Driving Adapters"]
+        Spring[Spring Boot<br/>REST API :8082]
+        Quarkus[Quarkus<br/>REST API :8081]
+        Micronaut[Micronaut<br/>REST API :8083]
     end
     
-    subgraph "Application Layer"
-        D[Use Cases<br/>Services]
-        E[Input Ports<br/>Interfaces]
-        F[Output Ports<br/>Interfaces]
+    subgraph Application["📍 Application Layer"]
+        PortIn[Input Ports<br/>Use Case Interfaces]
+        Services[Use Case Services<br/>Business Orchestration]
+        PortOut[Output Ports<br/>Repository Interfaces]
     end
     
-    subgraph "Domain Layer"
-        G[Entities]
-        H[Value Objects]
-        I[Domain Logic]
+    subgraph Domain["⬡ Domain Layer"]
+        Entities[Domain Entities<br/>Customer, MenuItem, Order]
+        ValueObjects[Value Objects<br/>Money, Status]
+        Logic[Business Logic<br/>Pure Java]
     end
     
-    subgraph "Infrastructure Layer"
-        J[JPA Repositories]
-        K[Redis Cache]
-        L[Mappers]
+    subgraph Infrastructure["🔧 Infrastructure Layer"]
+        JPA[JPA Repositories<br/>MySQL Persistence]
+        Redis[Redis Cache<br/>Caching Service]
+        Mappers[Entity Mappers<br/>JPA ↔ Domain]
     end
     
-    subgraph "External"
-        M[(MySQL<br/>Database)]
-        N[(Redis<br/>Cache)]
+    subgraph External["💾 External Systems"]
+        MySQL[(MySQL<br/>Database)]
+        RedisDB[(Redis<br/>Cache)]
     end
     
-    A --> C
-    B --> C
-    C --> E
-    E --> D
-    D --> F
-    D --> G
-    D --> H
-    F --> J
-    F --> K
-    J --> L
-    L --> G
-    J --> M
-    K --> N
+    Spring --> PortIn
+    Quarkus --> PortIn
+    Micronaut --> PortIn
     
-    style A fill:#e1f5ff
-    style B fill:#e1f5ff
-    style D fill:#fff4e1
-    style G fill:#e8f5e9
-    style J fill:#f3e5f5
+    PortIn --> Services
+    Services --> Entities
+    Services --> Logic
+    Services --> PortOut
+    
+    PortOut --> JPA
+    PortOut --> Redis
+    
+    JPA --> Mappers
+    Mappers --> Entities
+    
+    JPA --> MySQL
+    Redis --> RedisDB
+    
+    style Driving fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Application fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style Domain fill:none,stroke:#4caf50,stroke-width:4px
+    style Infrastructure fill:none,stroke:#F57C00,stroke-width:2px,stroke-dasharray: 5 5
+    style External fill:none,stroke:#666,stroke-width:2px,stroke-dasharray: 5 5
+    style Entities fill:none,stroke:#4caf50,stroke-width:3px
+    style Logic fill:none,stroke:#4caf50,stroke-width:2px
 ```
 
 ## 🔄 Fluxo de Criação de Customer
@@ -89,110 +95,117 @@ sequenceDiagram
 ## 📦 Estrutura de Pacotes
 
 ```mermaid
-graph LR
-    subgraph "com.restaurant"
-        subgraph "domain"
-            D1[entity]
-            D2[valueobject]
+flowchart TB
+    subgraph Backend["backend/"]
+        subgraph Domain["domain/"]
+            D1[entity/<br/>Customer, MenuItem, Order]
+            D2[valueobject/<br/>Money, Status]
         end
         
-        subgraph "application"
-            A1[service]
-            A2[port.in]
-            A3[port.out]
+        subgraph Application["application/"]
+            A1[service/<br/>Use Case Implementations]
+            A2[port.in/<br/>Input Interfaces]
+            A3[port.out/<br/>Output Interfaces]
         end
         
-        subgraph "infrastructure"
-            I1[persistence.entity]
-            I2[persistence.repository]
-            I3[persistence.mapper]
-            I4[cache]
+        subgraph Infrastructure["infrastructure/"]
+            I1[persistence.entity/<br/>JPA Entities]
+            I2[persistence.repository/<br/>JPA Repos]
+            I3[persistence.mapper/<br/>Entity Mappers]
+            I4[cache/<br/>Redis Service]
         end
         
-        subgraph "springboot"
-            S1[controller]
-            S2[dto]
-            S3[mapper]
-            S4[config]
+        subgraph SpringBoot["spring-boot-app/"]
+            S1[controller/<br/>REST Controllers]
+            S2[dto/<br/>DTOs + Jackson]
+            S3[mapper/<br/>DTO Mappers]
+            S4[config/<br/>Spring Config]
         end
         
-        subgraph "quarkus"
-            Q1[resource]
-            Q2[config]
+        subgraph Quarkus["quarkus-app/"]
+            Q1[resource/<br/>JAX-RS Resources]
+            Q2[dto/<br/>DTOs + Jackson]
+            Q3[mapper/<br/>DTO Mappers]
+        end
+        
+        subgraph Micronaut["micronaut-app/"]
+            M1[controller/<br/>HTTP Controllers]
+            M2[dto/<br/>DTOs + Jackson]
+            M3[mapper/<br/>DTO Mappers]
         end
     end
     
-    S1 --> S2
-    S2 --> S3
-    S3 --> A2
+    S1 --> S2 --> S3 --> A2
+    Q1 --> Q2 --> Q3 --> A2
+    M1 --> M2 --> M3 --> A2
+    
     A2 --> A1
+    A1 --> D1
     A1 --> A3
     A3 --> I2
     I2 --> I3
     I3 --> D1
-    A1 --> D1
     
-    style D1 fill:#e8f5e9
-    style D2 fill:#e8f5e9
-    style A1 fill:#fff4e1
-    style I2 fill:#f3e5f5
-    style S1 fill:#e1f5ff
+    style Domain fill:none,stroke:#4caf50,stroke-width:3px,stroke-dasharray: 5 5
+    style Application fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style Infrastructure fill:none,stroke:#F57C00,stroke-width:2px,stroke-dasharray: 5 5
+    style SpringBoot fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Quarkus fill:none,stroke:#C2185B,stroke-width:2px,stroke-dasharray: 5 5
+    style Micronaut fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style Backend fill:none,stroke:#666,stroke-width:1px
 ```
 
 ## 🎯 Padrão Ports & Adapters
 
 ```mermaid
-graph TB
-    subgraph "Driving Side (Primary)"
-        REST[REST API<br/>Controllers]
-        CLI[CLI Interface]
+flowchart TB
+    subgraph Driving["🔌 Driving Adapters (Primary)"]
+        REST[REST API<br/>Spring/Quarkus/Micronaut]
+        CLI[CLI Interface<br/>Future]
     end
     
-    subgraph "Application Core"
-        subgraph "Input Ports"
+    subgraph Core["⬡ Application Core"]
+        subgraph InputPorts["Input Ports"]
             IP1[CustomerUseCase]
             IP2[MenuUseCase]
             IP3[OrderUseCase]
         end
         
-        subgraph "Business Logic"
-            BL[Services]
+        subgraph Business["Business Logic"]
+            BL[Use Case Services<br/>Domain Operations]
         end
         
-        subgraph "Output Ports"
+        subgraph OutputPorts["Output Ports"]
             OP1[CustomerRepository]
             OP2[MenuItemRepository]
             OP3[CacheService]
         end
     end
     
-    subgraph "Driven Side (Secondary)"
-        DB[(Database<br/>MySQL)]
-        CACHE[(Cache<br/>Redis)]
-        EXT[External APIs]
+    subgraph Driven["🔧 Driven Adapters (Secondary)"]
+        DB[JPA Repository<br/>MySQL]
+        CACHE[Redis Cache<br/>Caching]
+        EXT[External APIs<br/>Future]
     end
     
-    REST --> IP1
-    REST --> IP2
-    REST --> IP3
-    CLI --> IP1
+    REST --> IP1 & IP2 & IP3
+    CLI -.-> IP1
     
-    IP1 --> BL
-    IP2 --> BL
-    IP3 --> BL
+    IP1 & IP2 & IP3 --> BL
     
-    BL --> OP1
-    BL --> OP2
-    BL --> OP3
+    BL --> OP1 & OP2 & OP3
     
-    OP1 --> DB
-    OP2 --> DB
+    OP1 & OP2 --> DB
     OP3 --> CACHE
-    OP3 --> EXT
+    OP3 -.-> EXT
     
-    style BL fill:#fff4e1
-    style REST fill:#e1f5ff
-    style DB fill:#f3e5f5
+    style Driving fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Core fill:none,stroke:#4caf50,stroke-width:4px
+    style Driven fill:none,stroke:#F57C00,stroke-width:2px,stroke-dasharray: 5 5
+    style InputPorts fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 3 3
+    style Business fill:none,stroke:#4caf50,stroke-width:2px,stroke-dasharray: 3 3
+    style OutputPorts fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 3 3
+    style BL fill:none,stroke:#4caf50,stroke-width:2px
 ```
 
 ## 🔀 Fluxo de Dados com Cache
@@ -231,47 +244,51 @@ sequenceDiagram
 ## 🏛️ Camadas e Dependências
 
 ```mermaid
-graph TD
-    subgraph "Layer Dependencies"
-        L1[Presentation Layer<br/>Spring Boot / Quarkus]
-        L2[Application Layer<br/>Use Cases & Ports]
-        L3[Domain Layer<br/>Entities & Business Logic]
-        L4[Infrastructure Layer<br/>JPA, Redis, Mappers]
-    end
+flowchart TD
+    L1[🔌 Presentation Layer<br/>Spring Boot / Quarkus / Micronaut]
+    L2[📍 Application Layer<br/>Use Cases & Ports]
+    L3[⬡ Domain Layer<br/>Entities & Business Logic<br/>Pure Java]
+    L4[🔧 Infrastructure Layer<br/>JPA, Redis, Mappers]
+    X[❌ External Frameworks<br/>Spring, Quarkus, etc.]
     
     L1 -->|depends on| L2
     L2 -->|depends on| L3
     L4 -->|depends on| L3
     L4 -->|implements| L2
     
-    L3 -.->|NO dependencies| X[External Frameworks]
+    L3 -.->|NO dependencies| X
     
-    style L3 fill:#e8f5e9,stroke:#4caf50,stroke-width:3px
-    style X fill:#ffebee,stroke:#f44336,stroke-width:2px,stroke-dasharray: 5 5
+    style L1 fill:none,stroke:#1976D2,stroke-width:2px
+    style L2 fill:none,stroke:#7B1FA2,stroke-width:2px
+    style L3 fill:none,stroke:#4caf50,stroke-width:4px
+    style L4 fill:none,stroke:#F57C00,stroke-width:2px
+    style X fill:none,stroke:#f44336,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 ## 🔐 Fluxo de Validação
 
 ```mermaid
 flowchart TD
-    A[Request] --> B{DTO Validation}
-    B -->|Invalid| C[400 Bad Request]
+    A[📥 Request] --> B{DTO Validation}
+    B -->|Invalid| C[❌ 400 Bad Request]
     B -->|Valid| D[Create Command]
-    D --> E{Business Rules}
-    E -->|Violation| F[IllegalArgumentException]
-    E -->|Valid| G[Create Domain Entity]
+    D --> E{Business Rules<br/>Validation}
+    E -->|Violation| F[❌ IllegalArgumentException]
+    E -->|Valid| G[⬡ Create Domain Entity]
     G --> H{Domain Validation}
-    H -->|Invalid| I[ValidationException]
-    H -->|Valid| J[Save to Repository]
+    H -->|Invalid| I[❌ ValidationException]
+    H -->|Valid| J[💾 Save to Repository]
     J --> K[Return Entity]
     K --> L[Convert to DTO]
-    L --> M[201 Created]
+    L --> M[✅ 201 Created]
     
-    style G fill:#e8f5e9
-    style C fill:#ffebee
-    style F fill:#ffebee
-    style I fill:#ffebee
-    style M fill:#e1f5ff
+    style A fill:none,stroke:#1976D2,stroke-width:2px
+    style G fill:none,stroke:#4caf50,stroke-width:3px
+    style C fill:none,stroke:#f44336,stroke-width:2px
+    style F fill:none,stroke:#f44336,stroke-width:2px
+    style I fill:none,stroke:#f44336,stroke-width:2px
+    style M fill:none,stroke:#4caf50,stroke-width:2px
+    style J fill:none,stroke:#F57C00,stroke-width:2px
 ```
 
 ## 🔄 Ciclo de Vida do Pedido
@@ -310,130 +327,138 @@ stateDiagram-v2
 ## 🏢 Arquitetura Multi-Framework
 
 ```mermaid
-graph TB
-    subgraph "Client Applications"
-        WEB[Web Browser<br/>Angular]
-        MOBILE[Mobile App]
-        API[External API]
+flowchart TB
+    subgraph Clients["👥 Client Applications"]
+        WEB[🌐 Web Browser<br/>Angular]
+        MOBILE[📱 Mobile App<br/>Future]
+        API[🔗 External API<br/>Future]
     end
     
-    subgraph "API Gateway / Load Balancer"
-        LB[Load Balancer]
+    subgraph Gateway["🔀 API Gateway"]
+        LB[Nginx Load Balancer<br/>Round Robin]
     end
     
-    subgraph "Spring Boot Instance"
-        SB1[Spring Boot App<br/>Port 8082]
+    subgraph Backends["☕ Backend Instances"]
+        SB1[Spring Boot<br/>:8082]
+        QK1[Quarkus<br/>:8081]
+        MN1[Micronaut<br/>:8083]
     end
     
-    subgraph "Quarkus Instance"
-        QK1[Quarkus App<br/>Port 8081]
+    subgraph Shared["⬡ Shared Core Layers"]
+        DOM[Domain Layer<br/>Pure Java]
+        APP[Application Layer<br/>Use Cases]
+        INF[Infrastructure Layer<br/>JPA + Redis]
     end
     
-    subgraph "Shared Layers"
-        DOM[Domain Layer]
-        APP[Application Layer]
-        INF[Infrastructure Layer]
-    end
-    
-    subgraph "Data Layer"
+    subgraph Data["💾 Data Layer"]
         MYSQL[(MySQL<br/>Database)]
         REDIS[(Redis<br/>Cache)]
     end
     
     WEB --> LB
-    MOBILE --> LB
-    API --> LB
+    MOBILE -.-> LB
+    API -.-> LB
     
-    LB --> SB1
-    LB --> QK1
+    LB --> SB1 & QK1 & MN1
     
-    SB1 --> DOM
-    SB1 --> APP
-    SB1 --> INF
+    SB1 & QK1 & MN1 --> DOM
+    SB1 & QK1 & MN1 --> APP
+    SB1 & QK1 & MN1 --> INF
     
-    QK1 --> DOM
-    QK1 --> APP
-    QK1 --> INF
+    INF --> MYSQL & REDIS
     
-    INF --> MYSQL
-    INF --> REDIS
-    
-    style DOM fill:#e8f5e9
-    style APP fill:#fff4e1
-    style INF fill:#f3e5f5
-    style SB1 fill:#e1f5ff
-    style QK1 fill:#e1f5ff
+    style Clients fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Gateway fill:none,stroke:#388E3C,stroke-width:2px,stroke-dasharray: 5 5
+    style Backends fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Shared fill:none,stroke:#4caf50,stroke-width:4px
+    style Data fill:none,stroke:#666,stroke-width:2px,stroke-dasharray: 5 5
+    style DOM fill:none,stroke:#4caf50,stroke-width:3px
+    style APP fill:none,stroke:#7B1FA2,stroke-width:2px
+    style INF fill:none,stroke:#F57C00,stroke-width:2px
 ```
 
 ## 📊 Fluxo de Testes de Arquitetura
 
 ```mermaid
 flowchart LR
-    A[Code Change] --> B[Maven Build]
-    B --> C[Architecture Tests]
+    A[💻 Code Change] --> B[🔨 Maven Build]
+    B --> C[🧪 Architecture Tests]
     
-    subgraph "Architecture Validation"
-        C --> D{Hexagonal Rules}
-        C --> E{Naming Conventions}
-        C --> F{Layer Purity}
-        C --> G{Ports & Adapters}
+    subgraph Validation["Architecture Validation"]
+        D{Hexagonal Rules<br/>44 tests}
+        E{Naming Conventions}
+        F{Layer Purity}
+        G{Ports & Adapters}
     end
     
-    D -->|Pass| H[✅]
-    D -->|Fail| I[❌ Violation]
-    E -->|Pass| H
-    E -->|Fail| I
-    F -->|Pass| H
-    F -->|Fail| I
-    G -->|Pass| H
-    G -->|Fail| I
+    C --> D & E & F & G
     
-    H --> J[Build Success]
-    I --> K[Build Failure]
+    D & E & F & G -->|All Pass| H[✅ Success]
+    D & E & F & G -->|Any Fail| I[❌ Violation]
     
-    J --> L[Deploy]
-    K --> M[Fix Code]
+    H --> J[🚀 Build Success]
+    I --> K[🛑 Build Failure]
+    
+    J --> L[📦 Deploy]
+    K --> M[🔧 Fix Code]
     M --> A
     
-    style H fill:#e8f5e9
-    style I fill:#ffebee
-    style J fill:#e1f5ff
-    style K fill:#ffebee
+    style A fill:none,stroke:#1976D2,stroke-width:2px
+    style Validation fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style H fill:none,stroke:#4caf50,stroke-width:3px
+    style I fill:none,stroke:#f44336,stroke-width:3px
+    style J fill:none,stroke:#4caf50,stroke-width:2px
+    style K fill:none,stroke:#f44336,stroke-width:2px
+    style L fill:none,stroke:#388E3C,stroke-width:2px
 ```
 
 ## 🎨 Padrão DTO vs Domain
 
 ```mermaid
-graph LR
-    subgraph "Presentation Layer"
-        DTO[CustomerDTO<br/>+ Jackson Annotations<br/>+ Validation<br/>+ Serialization]
+flowchart LR
+    subgraph Presentation["🔌 Presentation Layer"]
+        DTO[CustomerDTO<br/>✅ Jackson Annotations<br/>✅ Validation<br/>✅ Serialization]
     end
     
-    subgraph "Mapper"
-        MAP[CustomerDTOMapper<br/>toDTO()<br/>toDomain()]
+    subgraph Mapper["🔄 Mapper Layer"]
+        MAP[CustomerDTOMapper<br/>toDTO()<br/>toEntity()<br/>toCommand()]
     end
     
-    subgraph "Domain Layer"
-        DOM[Customer Entity<br/>+ Business Logic<br/>+ Pure Java<br/>- No Frameworks]
+    subgraph Domain["⬡ Domain Layer"]
+        DOM[Customer Entity<br/>✅ Business Logic<br/>✅ Pure Java<br/>❌ No Frameworks<br/>❌ No Annotations]
     end
     
     DTO <-->|Convert| MAP
     MAP <-->|Convert| DOM
     
-    style DTO fill:#e1f5ff
-    style DOM fill:#e8f5e9
-    style MAP fill:#fff4e1
+    style Presentation fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Mapper fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style Domain fill:none,stroke:#4caf50,stroke-width:4px
+    style DTO fill:none,stroke:#1976D2,stroke-width:2px
+    style MAP fill:none,stroke:#7B1FA2,stroke-width:2px
+    style DOM fill:none,stroke:#4caf50,stroke-width:3px
 ```
 
 ---
 
-## 📚 Legenda de Cores
+## 📚 Legenda de Estilos
 
-- 🟢 **Verde**: Domain Layer (Puro, sem frameworks)
-- 🟡 **Amarelo**: Application Layer (Use Cases)
-- 🟣 **Roxo**: Infrastructure Layer (Persistência)
-- 🔵 **Azul**: Presentation Layer (Controllers/APIs)
-- 🔴 **Vermelho**: Erros ou Violações
+### Cores das Bordas
+
+- 🟢 **Verde** (#4caf50): Domain Layer (Puro, sem frameworks)
+- 🟣 **Roxo** (#7B1FA2): Application Layer / Ports (Interfaces)
+- 🟠 **Laranja** (#F57C00): Infrastructure Layer (Driven Adapters)
+- 🔵 **Azul** (#1976D2): Presentation Layer (Driving Adapters)
+- 🔴 **Vermelho** (#f44336): Erros ou Violações
+
+### Estilos de Linha
+
+- **Sólida**: Componentes individuais
+- **Pontilhada (5 5)**: Agrupamentos de camadas
+- **Pontilhada (3 3)**: Sub-agrupamentos
+- **Espessura 4px**: Hexagon Core (destaque)
+- **Espessura 3px**: Entidades Domain
+- **Espessura 2px**: Demais componentes
 
 ---
 

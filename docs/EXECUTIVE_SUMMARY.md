@@ -202,6 +202,69 @@ restaurant-management/
 
 ---
 
+## 🎨 Frontend Angular
+
+### Tecnologias
+
+- **Framework**: Angular 18+
+- **UI**: Angular Material
+- **HTTP**: HttpClient
+- **Routing**: Angular Router
+- **Build**: Angular CLI
+
+### Funcionalidades
+
+- 🏠 **Dashboard**: Visão geral do sistema
+- 👥 **Customers**: CRUD completo de clientes
+- 🍽️ **Menu Items**: Gerenciamento de cardápio
+- 📊 **Reports**: Relatórios e estatísticas
+- 🔄 **Real-time**: Integração com backends via REST
+
+### Arquitetura Frontend
+
+```mermaid
+flowchart LR
+    User[👤 Usuário]
+    Angular[🎨 Angular App<br/>Components + Services]
+    HTTP[🌐 HTTP Client<br/>REST Calls]
+    Backend[☕ Backend APIs<br/>Spring/Quarkus/Micronaut]
+    
+    User --> Angular
+    Angular --> HTTP
+    HTTP -->|/api/spring/*| Backend
+    HTTP -->|/api/quarkus/*| Backend
+    HTTP -->|/api/micronaut/*| Backend
+    Backend -->|JSON| HTTP
+    HTTP -->|Data| Angular
+    Angular -->|UI| User
+    
+    style Angular fill:none,stroke:#DD0031,stroke-width:2px
+    style HTTP fill:none,stroke:#1976D2,stroke-width:2px
+    style Backend fill:none,stroke:#4caf50,stroke-width:2px
+```
+
+### Como Executar
+
+**Desenvolvimento**:
+```bash
+cd frontend-angular
+npm install
+ng serve
+# Acesso: http://localhost:4200
+```
+
+**Produção (Docker)**:
+```bash
+cd docker-infrastructure
+./build-frontend.sh
+./start-spring.sh  # ou start-quarkus.sh / start-micronaut.sh
+# Acesso: http://localhost
+```
+
+📖 **Documentação**: [docker-infrastructure/README-frontend.md](../docker-infrastructure/README-frontend.md)
+
+---
+
 ## 📚 Documentação
 
 ### Guias Disponíveis

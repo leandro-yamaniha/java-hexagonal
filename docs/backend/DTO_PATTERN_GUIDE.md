@@ -11,45 +11,34 @@ Este projeto utiliza o **padrão DTO** para manter o domínio puro e isolado de 
 3. **Flexibilidade**: Facilitar mudanças no formato de API sem afetar o domínio
 4. **Testabilidade**: Permitir testes unitários do domínio sem dependências externas
 
-## 🏗️ Arquitetura
+## 🏗️ Arquitetura do Padrão DTO
 
 ```mermaid
-graph LR
-    A[Client<br/>JSON] --> B[Controller]
-    B --> C[DTO]
-    C --> D[Mapper]
-    D --> E[Domain Entity]
-    E --> F[Business Logic]
-    F --> E
-    E --> D
-    D --> C
-    C --> B
-    B --> A
+flowchart LR
+    Client[👤 Client<br/>JSON Request]
+    Controller[🌐 Controller<br/>REST API]
+    DTO[📦 DTO<br/>Jackson]
+    Mapper[🔄 Mapper<br/>Converter]
+    Entity[⬡ Domain Entity<br/>Pure Java]
+    Logic[💼 Business Logic<br/>Use Cases]
     
-    style C fill:#e1f5ff
-    style E fill:#e8f5e9
-    style D fill:#fff4e1
-```
-
-## 📁 Estrutura de Arquivos
-
-```
-spring-boot-app/
-├── dto/
-│   ├── CustomerDTO.java           ← DTOs com anotações Jackson
-│   ├── MenuItemDTO.java
-│   ├── OrderDTO.java
-│   └── RestaurantTableDTO.java
-├── mapper/
-│   ├── CustomerDTOMapper.java     ← Conversores Domain ↔ DTO
-│   ├── MenuItemDTOMapper.java
-│   ├── OrderDTOMapper.java
-│   └── RestaurantTableDTOMapper.java
-└── controller/
-    ├── CustomerController.java    ← Usa DTOs nas APIs
-    ├── MenuItemController.java
-    ├── OrderController.java
-    └── TableController.java
+    Client -->|JSON| Controller
+    Controller -->|Deserialize| DTO
+    DTO -->|toEntity()| Mapper
+    Mapper -->|Pure Object| Entity
+    Entity -->|Process| Logic
+    Logic -->|Result| Entity
+    Entity -->|toDTO()| Mapper
+    Mapper -->|Serialize| DTO
+    DTO -->|JSON| Controller
+    Controller -->|Response| Client
+    
+    style Client fill:none,stroke:#1976D2,stroke-width:2px
+    style Controller fill:none,stroke:#1976D2,stroke-width:2px
+    style DTO fill:none,stroke:#FF6F00,stroke-width:2px
+    style Mapper fill:none,stroke:#7B1FA2,stroke-width:2px
+    style Entity fill:none,stroke:#4caf50,stroke-width:3px
+    style Logic fill:none,stroke:#4caf50,stroke-width:2px
 ```
 
 ## 🔄 Fluxo de Dados

@@ -85,28 +85,48 @@ sequenceDiagram
 
 ## Dependency Flow
 
-```
-┌─────────────────┐    ┌─────────────────┐
-│   Spring Boot   │    │     Quarkus     │
-│   Application   │    │   Application   │
-└─────────┬───────┘    └─────────┬───────┘
-          │                      │
-          └──────────┬───────────┘
-                     │
-          ┌──────────▼───────────┐
-          │   Infrastructure     │
-          │     (Adapters)       │
-          └──────────┬───────────┘
-                     │
-          ┌──────────▼───────────┐
-          │    Application       │
-          │   (Use Cases)        │
-          └──────────┬───────────┘
-                     │
-          ┌──────────▼───────────┐
-          │      Domain          │
-          │  (Business Logic)    │
-          └──────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Frameworks["🔌 Framework Adapters (Driving)"]
+        Spring[Spring Boot<br/>Port 8082]
+        Quarkus[Quarkus<br/>Port 8081]
+        Micronaut[Micronaut<br/>Port 8083]
+    end
+    
+    subgraph Infra["🔧 Infrastructure (Driven)"]
+        JPA[JPA Repository<br/>MySQL]
+        Redis[Redis Cache]
+    end
+    
+    subgraph App["📍 Application Layer"]
+        PortIn[Input Ports<br/>Use Case Interfaces]
+        PortOut[Output Ports<br/>Repository Interfaces]
+        Services[Use Case<br/>Implementations]
+    end
+    
+    subgraph Dom["⬡ Domain Layer"]
+        Entities[Domain Entities<br/>Business Logic<br/>Pure Java]
+    end
+    
+    Spring --> PortIn
+    Quarkus --> PortIn
+    Micronaut --> PortIn
+    
+    PortIn --> Services
+    Services --> Entities
+    Services --> PortOut
+    
+    PortOut --> JPA
+    PortOut --> Redis
+    
+    JPA --> Entities
+    Redis --> Entities
+    
+    style Frameworks fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Infra fill:none,stroke:#F57C00,stroke-width:2px,stroke-dasharray: 5 5
+    style App fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style Dom fill:none,stroke:#4caf50,stroke-width:4px
+    style Entities fill:none,stroke:#4caf50,stroke-width:3px
 ```
 
 ## Key Architectural Decisions
@@ -128,23 +148,38 @@ sequenceDiagram
 
 ### 4. Clean Module Boundaries
 
-```xml
-<!-- Root POM: Framework neutral -->
-<parent>
-    <!-- No parent - neutral -->
-</parent>
-
-<!-- Spring Boot App: Framework specific -->
-<parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-</parent>
-
-<!-- Core modules: Pure Java -->
-<parent>
-    <groupId>com.restaurant</groupId>
-    <artifactId>restaurant-management</artifactId>
-</parent>
+```mermaid
+flowchart LR
+    subgraph Root["Root POM"]
+        RootPOM[restaurant-management<br/>Framework Neutral]
+    end
+    
+    subgraph Core["Core Modules"]
+        Domain[domain<br/>Pure Java]
+        App[application<br/>Pure Java]
+        Infra[infrastructure<br/>JPA Only]
+    end
+    
+    subgraph Frameworks["Framework Modules"]
+        Spring[spring-boot-app<br/>Spring Parent]
+        Quarkus[quarkus-app<br/>Quarkus BOM]
+        Micronaut[micronaut-app<br/>Micronaut Parent]
+    end
+    
+    RootPOM --> Domain
+    RootPOM --> App
+    RootPOM --> Infra
+    RootPOM --> Spring
+    RootPOM --> Quarkus
+    RootPOM --> Micronaut
+    
+    Spring --> Core
+    Quarkus --> Core
+    Micronaut --> Core
+    
+    style Root fill:none,stroke:#666,stroke-width:2px
+    style Core fill:none,stroke:#4caf50,stroke-width:2px,stroke-dasharray: 5 5
+    style Frameworks fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 

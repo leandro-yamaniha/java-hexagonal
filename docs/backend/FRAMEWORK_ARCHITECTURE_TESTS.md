@@ -1,8 +1,8 @@
-# 🧪 Testes de Arquitetura - Spring Boot e Quarkus
+# 🧪 Testes de Arquitetura - Frameworks
 
 ## ✅ Resposta: SIM, existem testes específicos!
 
-Os testes de arquitetura **validam ambos os frameworks** (Spring Boot e Quarkus) e garantem que eles seguem as regras da arquitetura hexagonal.
+Os testes de arquitetura **validam todos os frameworks** (Spring Boot, Quarkus e Micronaut) e garantem que eles seguem as regras da arquitetura hexagonal.
 
 ---
 
@@ -23,24 +23,27 @@ void shouldRespectHexagonalLayeredArchitecture() {
         .layer("Domain").definedBy("..domain..")
         .layer("Application").definedBy("..application..")
         .layer("Infrastructure").definedBy("..infrastructure..")
-        .optionalLayer("Quarkus").definedBy("..quarkus..")        // ✅ Quarkus
         .optionalLayer("SpringBoot").definedBy("..springboot..")  // ✅ Spring Boot
+        .optionalLayer("Quarkus").definedBy("..quarkus..")        // ✅ Quarkus
+        .optionalLayer("Micronaut").definedBy("..micronaut..")    // ✅ Micronaut
         
         // Regras de dependência
         .whereLayer("Domain").mayNotAccessAnyLayer()
         .whereLayer("Application").mayOnlyAccessLayers("Domain")
         .whereLayer("Infrastructure").mayOnlyAccessLayers("Domain", "Application")
+        .whereLayer("SpringBoot").mayOnlyAccessLayers("Domain", "Application", "Infrastructure")  // ✅
         .whereLayer("Quarkus").mayOnlyAccessLayers("Domain", "Application", "Infrastructure")      // ✅
-        .whereLayer("SpringBoot").mayOnlyAccessLayers("Domain", "Application", "Infrastructure");  // ✅
+        .whereLayer("Micronaut").mayOnlyAccessLayers("Domain", "Application", "Infrastructure");   // ✅
 
     layeredArchitectureRule.check(importedClasses);
 }
 ```
 
 **Validações**:
-- ✅ Quarkus pode acessar: Domain, Application, Infrastructure
 - ✅ Spring Boot pode acessar: Domain, Application, Infrastructure
-- ✅ Ambos **NÃO** podem ser acessados por camadas inferiores
+- ✅ Quarkus pode acessar: Domain, Application, Infrastructure
+- ✅ Micronaut pode acessar: Domain, Application, Infrastructure
+- ✅ Frameworks **NÃO** podem ser acessados por camadas inferiores
 
 ---
 
@@ -56,8 +59,9 @@ void domainShouldNotDependOnFrameworks() {
         .resideInAnyPackage(
             "..application..", 
             "..infrastructure..", 
+            "..springboot..",   // ✅ Domínio não pode depender de Spring Boot
             "..quarkus..",      // ✅ Domínio não pode depender de Quarkus
-            "..springboot.."    // ✅ Domínio não pode depender de Spring Boot
+            "..micronaut.."     // ✅ Domínio não pode depender de Micronaut
         );
 
     domainRule.check(importedClasses);
@@ -67,6 +71,7 @@ void domainShouldNotDependOnFrameworks() {
 **Validação**:
 - ✅ Domínio **NÃO** pode depender de Spring Boot
 - ✅ Domínio **NÃO** pode depender de Quarkus
+- ✅ Domínio **NÃO** pode depender de Micronaut
 
 ---
 
@@ -81,8 +86,9 @@ void applicationShouldNotDependOnFrameworks() {
         .should().dependOnClassesThat()
         .resideInAnyPackage(
             "..infrastructure..", 
+            "..springboot..",   // ✅ Application não pode depender de Spring Boot
             "..quarkus..",      // ✅ Application não pode depender de Quarkus
-            "..springboot.."    // ✅ Application não pode depender de Spring Boot
+            "..micronaut.."     // ✅ Application não pode depender de Micronaut
         );
 
     applicationRule.check(importedClasses);
@@ -92,6 +98,7 @@ void applicationShouldNotDependOnFrameworks() {
 **Validação**:
 - ✅ Application **NÃO** pode depender de Spring Boot
 - ✅ Application **NÃO** pode depender de Quarkus
+- ✅ Application **NÃO** pode depender de Micronaut
 
 ---
 
@@ -105,8 +112,9 @@ void infrastructureShouldNotDependOnFrameworks() {
         .that().resideInAPackage("..infrastructure..")
         .should().dependOnClassesThat()
         .resideInAnyPackage(
+            "..springboot..",   // ✅ Infrastructure não pode depender de Spring Boot
             "..quarkus..",      // ✅ Infrastructure não pode depender de Quarkus
-            "..springboot.."    // ✅ Infrastructure não pode depender de Spring Boot
+            "..micronaut.."     // ✅ Infrastructure não pode depender de Micronaut
         );
 
     infrastructureRule.check(importedClasses);
@@ -116,6 +124,7 @@ void infrastructureShouldNotDependOnFrameworks() {
 **Validação**:
 - ✅ Infrastructure **NÃO** pode depender de Spring Boot
 - ✅ Infrastructure **NÃO** pode depender de Quarkus
+- ✅ Infrastructure **NÃO** pode depender de Micronaut
 
 ---
 
@@ -127,8 +136,9 @@ void infrastructureShouldNotDependOnFrameworks() {
 void restControllersShouldHaveControllerOrResourceSuffix() {
     ArchRule controllerNamingRule = classes()
         .that().resideInAnyPackage(
+            "..springboot..",   // ✅ Valida controllers Spring Boot
             "..quarkus..",      // ✅ Valida controllers Quarkus
-            "..springboot.."    // ✅ Valida controllers Spring Boot
+            "..micronaut.."     // ✅ Valida controllers Micronaut
         )
         .and().areNotInterfaces()
         .and().areNotEnums()
@@ -142,6 +152,7 @@ void restControllersShouldHaveControllerOrResourceSuffix() {
 **Validação**:
 - ✅ Controllers do Spring Boot devem terminar com "Controller"
 - ✅ Resources do Quarkus devem terminar com "Controller" ou "Resource"
+- ✅ Controllers do Micronaut devem terminar com "Controller"
 
 ---
 
@@ -153,8 +164,9 @@ void restControllersShouldHaveControllerOrResourceSuffix() {
 void controllersShouldOnlyDependOnInboundPorts() {
     ArchRule controllersRule = classes()
         .that().resideInAnyPackage(
+            "..springboot..",   // ✅ Valida Spring Boot
             "..quarkus..",      // ✅ Valida Quarkus
-            "..springboot.."    // ✅ Valida Spring Boot
+            "..micronaut.."     // ✅ Valida Micronaut
         )
         .and().haveSimpleNameEndingWith("Controller")
         .or().haveSimpleNameEndingWith("Resource")
@@ -174,19 +186,20 @@ void controllersShouldOnlyDependOnInboundPorts() {
 **Validação**:
 - ✅ Controllers do Spring Boot só podem usar ports de entrada
 - ✅ Controllers do Quarkus só podem usar ports de entrada
+- ✅ Controllers do Micronaut só podem usar ports de entrada
 
 ---
 
 ## 📊 Resumo dos Testes
 
-| Teste | Spring Boot | Quarkus | Status |
-|-------|-------------|---------|--------|
-| **Camadas Hexagonais** | ✅ Validado | ✅ Validado | ✅ Aprovado |
-| **Isolamento do Domínio** | ✅ Não depende | ✅ Não depende | ✅ Aprovado |
-| **Isolamento da Application** | ✅ Não depende | ✅ Não depende | ✅ Aprovado |
-| **Isolamento da Infrastructure** | ✅ Não depende | ✅ Não depende | ✅ Aprovado |
-| **Convenções de Nomenclatura** | ✅ Validado | ✅ Validado | ✅ Aprovado |
-| **Ports & Adapters** | ✅ Validado | ✅ Validado | ✅ Aprovado |
+| Teste | Spring Boot | Quarkus | Micronaut | Status |
+|-------|-------------|---------|-----------|--------|
+| **Camadas Hexagonais** | ✅ Validado | ✅ Validado | ✅ Validado | ✅ Aprovado |
+| **Isolamento do Domínio** | ✅ Não depende | ✅ Não depende | ✅ Não depende | ✅ Aprovado |
+| **Isolamento da Application** | ✅ Não depende | ✅ Não depende | ✅ Não depende | ✅ Aprovado |
+| **Isolamento da Infrastructure** | ✅ Não depende | ✅ Não depende | ✅ Não depende | ✅ Aprovado |
+| **Convenções de Nomenclatura** | ✅ Validado | ✅ Validado | ✅ Validado | ✅ Aprovado |
+| **Ports & Adapters** | ✅ Validado | ✅ Validado | ✅ Validado | ✅ Aprovado |
 
 ---
 
@@ -195,23 +208,40 @@ void controllersShouldOnlyDependOnInboundPorts() {
 ### ✅ **O Que É Permitido**
 
 ```mermaid
-graph TD
-    SB[Spring Boot] --> APP[Application Layer]
-    SB --> INF[Infrastructure Layer]
-    SB --> DOM[Domain Layer]
+flowchart TD
+    subgraph Frameworks["🔌 Framework Adapters"]
+        SB[Spring Boot<br/>:8082]
+        QK[Quarkus<br/>:8081]
+        MN[Micronaut<br/>:8083]
+    end
     
-    QK[Quarkus] --> APP
-    QK --> INF
+    subgraph Core["⬡ Core Layers"]
+        DOM[Domain Layer<br/>Pure Java]
+        APP[Application Layer<br/>Ports]
+        INF[Infrastructure Layer<br/>JPA + Redis]
+    end
+    
+    SB --> DOM
     QK --> DOM
+    MN --> DOM
+    SB --> APP
+    QK --> APP
+    MN --> APP
+    SB --> INF
+    QK --> INF
+    MN --> INF
     
-    style DOM fill:#e8f5e9
-    style APP fill:#fff4e1
-    style INF fill:#f3e5f5
-    style SB fill:#e1f5ff
-    style QK fill:#e1f5ff
+    style Frameworks fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Core fill:none,stroke:#4caf50,stroke-width:4px
+    style DOM fill:none,stroke:#4caf50,stroke-width:3px
+    style APP fill:none,stroke:#7B1FA2,stroke-width:2px
+    style INF fill:none,stroke:#F57C00,stroke-width:2px
+    style SB fill:none,stroke:#1976D2,stroke-width:2px
+    style QK fill:none,stroke:#C2185B,stroke-width:2px
+    style MN fill:none,stroke:#7B1FA2,stroke-width:2px
 ```
 
-**Spring Boot e Quarkus PODEM**:
+**Frameworks PODEM**:
 - ✅ Acessar Domain
 - ✅ Acessar Application (ports)
 - ✅ Acessar Infrastructure
@@ -220,26 +250,43 @@ graph TD
 ### ❌ **O Que É Proibido**
 
 ```mermaid
-graph TD
-    DOM[Domain Layer] -.->|❌ PROIBIDO| SB[Spring Boot]
-    DOM -.->|❌ PROIBIDO| QK[Quarkus]
+flowchart TD
+    subgraph Core["⬡ Core Layers (Protected)"]
+        DOM[Domain Layer]
+        APP[Application Layer]
+        INF[Infrastructure Layer]
+    end
     
-    APP[Application Layer] -.->|❌ PROIBIDO| SB
+    subgraph Frameworks["❌ Frameworks (Forbidden)"]
+        SB[Spring Boot]
+        QK[Quarkus]
+        MN[Micronaut]
+    end
+    
+    DOM -.->|❌ PROIBIDO| SB
+    DOM -.->|❌ PROIBIDO| QK
+    DOM -.->|❌ PROIBIDO| MN
+    APP -.->|❌ PROIBIDO| SB
     APP -.->|❌ PROIBIDO| QK
-    
-    INF[Infrastructure Layer] -.->|❌ PROIBIDO| SB
+    APP -.->|❌ PROIBIDO| MN
+    INF -.->|❌ PROIBIDO| SB
     INF -.->|❌ PROIBIDO| QK
+    INF -.->|❌ PROIBIDO| MN
     
-    style DOM fill:#e8f5e9
-    style APP fill:#fff4e1
-    style INF fill:#f3e5f5
-    style SB fill:#ffebee
-    style QK fill:#ffebee
+    style Core fill:none,stroke:#4caf50,stroke-width:4px
+    style Frameworks fill:none,stroke:#f44336,stroke-width:2px,stroke-dasharray: 5 5
+    style DOM fill:none,stroke:#4caf50,stroke-width:3px
+    style APP fill:none,stroke:#7B1FA2,stroke-width:2px
+    style INF fill:none,stroke:#F57C00,stroke-width:2px
+    style SB fill:none,stroke:#f44336,stroke-width:2px
+    style QK fill:none,stroke:#f44336,stroke-width:2px
+    style MN fill:none,stroke:#f44336,stroke-width:2px
 ```
 
 **Domain, Application e Infrastructure NÃO PODEM**:
 - ❌ Depender de Spring Boot
 - ❌ Depender de Quarkus
+- ❌ Depender de Micronaut
 - ❌ Usar anotações específicas de frameworks
 
 ---
@@ -277,14 +324,14 @@ BUILD SUCCESS
 
 ### Detalhamento
 
-| Classe de Teste | Testes | Spring Boot | Quarkus | Status |
-|-----------------|--------|-------------|---------|--------|
-| CoreArchitectureTest | 7 | ✅ | ✅ | 100% |
-| HexagonalArchitectureTest | 6 | ✅ | ✅ | 100% |
-| NamingConventionTest | 11 | ✅ | ✅ | 100% |
-| PortsAndAdaptersTest | 10 | ✅ | ✅ | 100% |
-| LayerPurityTest | 10 | ✅ | ✅ | 100% |
-| **TOTAL** | **44** | **✅** | **✅** | **100%** |
+| Classe de Teste | Testes | Spring Boot | Quarkus | Micronaut | Status |
+|-----------------|--------|-------------|---------|-----------|--------|
+| CoreArchitectureTest | 7 | ✅ | ✅ | ✅ | 100% |
+| HexagonalArchitectureTest | 6 | ✅ | ✅ | ✅ | 100% |
+| NamingConventionTest | 11 | ✅ | ✅ | ✅ | 100% |
+| PortsAndAdaptersTest | 10 | ✅ | ✅ | ✅ | 100% |
+| LayerPurityTest | 10 | ✅ | ✅ | ✅ | 100% |
+| **TOTAL** | **44** | **✅** | **✅** | **✅** | **100%** |
 
 ---
 
@@ -296,9 +343,10 @@ BUILD SUCCESS
 - ✅ Previne regressões arquiteturais
 
 ### 2. **Consistência Entre Frameworks**
-- ✅ Mesmas regras para Spring Boot e Quarkus
+- ✅ Mesmas regras para todos os frameworks
 - ✅ Garante arquitetura uniforme
 - ✅ Facilita manutenção
+- ✅ Fácil adicionar novos frameworks
 
 ### 3. **Documentação Viva**
 - ✅ Testes documentam a arquitetura
@@ -338,31 +386,32 @@ Domain should not depend on Spring Boot
 
 ## ✅ Conclusão
 
-**SIM, existem testes específicos para Spring Boot e Quarkus!**
+**SIM, existem testes específicos para todos os frameworks!**
 
 ### Cobertura
 
 - ✅ **6 testes** validam especificamente os frameworks
 - ✅ **44 testes** no total protegem a arquitetura
 - ✅ **100%** de aprovação
-- ✅ **Ambos frameworks** são validados igualmente
+- ✅ **Todos os frameworks** são validados igualmente
 
 ### Garantias
 
-1. ✅ Spring Boot e Quarkus seguem arquitetura hexagonal
+1. ✅ Spring Boot, Quarkus e Micronaut seguem arquitetura hexagonal
 2. ✅ Domínio permanece puro (sem dependências de frameworks)
 3. ✅ Controllers usam apenas ports de entrada
 4. ✅ Nomenclatura consistente
 5. ✅ Isolamento de camadas respeitado
+6. ✅ Fácil adicionar novos frameworks
 
 ---
 
 **Status**: ✅ **VALIDADO E PROTEGIDO**
 
-Ambos os frameworks (Spring Boot e Quarkus) são continuamente validados por testes de arquitetura automatizados!
+Todos os frameworks (Spring Boot, Quarkus e Micronaut) são continuamente validados por testes de arquitetura automatizados!
 
 ---
 
-**Última atualização**: 2025-09-30 20:28  
+**Última atualização**: 2025-10-02  
 **Testes**: 44/44 aprovados  
-**Frameworks validados**: Spring Boot ✅ | Quarkus ✅
+**Frameworks validados**: Spring Boot ✅ | Quarkus ✅ | Micronaut ✅
