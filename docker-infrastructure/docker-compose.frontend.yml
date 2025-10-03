@@ -16,8 +16,8 @@ services:
     networks:
       - restaurant-network
 
-  # Override nginx to depend on frontend
-  nginx:
+  # Override nginx-frontend to depend on frontend builder
+  nginx-frontend:
     depends_on:
       - frontend-builder
     volumes:
