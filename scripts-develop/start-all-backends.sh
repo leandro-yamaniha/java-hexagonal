@@ -159,8 +159,6 @@ else
     if docker compose ps redis | grep -q "running"; then
         echo -e "${GREEN}✅ Redis is ready${NC}"
     fi
-else
-    echo -e "${GREEN}✅ Docker services are already running${NC}"
 fi
 
 cd "$SCRIPT_DIR"
