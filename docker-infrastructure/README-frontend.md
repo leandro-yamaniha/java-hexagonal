@@ -1,12 +1,47 @@
-# 🎨 Frontend Setup
+# 🎨 Frontend Infrastructure
 
-## Current Status
+Documentação completa para o frontend Angular servido via Nginx.
 
-⚠️ **O frontend está PARCIALMENTE incluído** - Você precisa fazer o build primeiro!
+## 🏗️ Arquitetura
+
+```mermaid
+graph TB
+    User([👤 Usuário Browser])
+    
+    subgraph NginxFrontend["Nginx Frontend :80"]
+        Static[Serve Angular<br/>Static Files]
+        Proxy[Proxy /api/*]
+    end
+    
+    subgraph Build["Build Process"]
+        Angular[Angular App<br/>frontend-angular/]
+        NPM[npm run build]
+        Dist[dist/ folder]
+    end
+    
+    APIGateways[API Gateways<br/>:8081/:8082/:8083]
+    
+    User -->|HTTP| Static
+    User -->|API Requests| Proxy
+    Proxy --> APIGateways
+    
+    Angular --> NPM
+    NPM --> Dist
+    Dist -.Copy to.-> Static
+    
+    style NginxFrontend fill:none,stroke:#1976D2,stroke-width:2px,stroke-dasharray: 5 5
+    style Build fill:none,stroke:#FF6F00,stroke-width:2px,stroke-dasharray: 5 5
+    style Static fill:none,stroke:#1976D2,stroke-width:2px
+    style Proxy fill:none,stroke:#388E3C,stroke-width:2px
+```
+
+## ⚠️ Status Atual
+
+**O frontend está PARCIALMENTE incluído** - Você precisa fazer o build primeiro!
 
 ## 🔧 Como Funciona
 
-O Nginx está configurado para servir arquivos estáticos do frontend Angular de:
+O Nginx Frontend serve arquivos estáticos do Angular de:
 ```
 docker-infrastructure/frontend/dist/
 ```

@@ -14,168 +14,104 @@ Esta infraestrutura fornece:
 
 ## 🏗️ Arquitetura
 
-### Visão Geral da Infraestrutura
+### C4 Model - Container Diagram
+
+```mermaid
+C4Context
+    title Container Diagram - Restaurant Management System
+
+    Person(user, "Cliente", "Usuário do sistema via browser")
+    
+    System_Boundary(frontend, "Frontend Layer") {
+        Container(nginx_frontend, "Nginx Frontend", "Nginx:alpine", "Serve aplicação Angular e faz proxy para APIs")
+    }
+    
+    System_Boundary(api_layer, "API Gateway Layer") {
+        Container(nginx_api, "Nginx API Gateway", "Nginx:alpine", "Load balancer e roteamento de APIs")
+    }
+    
+    System_Boundary(backend, "Backend Layer") {
+        Container(backend_1, "Backend Instance 1", "Spring/Quarkus/Micronaut", "Processa requisições de negócio")
+        Container(backend_2, "Backend Instance 2", "Spring/Quarkus/Micronaut", "Processa requisições de negócio")
+    }
+    
+    System_Boundary(data, "Data Layer") {
+        ContainerDb(mysql, "MySQL Database", "MySQL 8.0", "Armazena dados persistentes")
+        ContainerDb(redis, "Redis Cache", "Redis 7", "Cache de dados em memória")
+    }
+    
+    Rel(user, nginx_frontend, "Acessa aplicação", "HTTPS/HTTP")
+    Rel(nginx_frontend, nginx_api, "Proxy /api/*", "HTTP")
+    Rel(nginx_api, backend_1, "Load balance", "HTTP")
+    Rel(nginx_api, backend_2, "Load balance", "HTTP")
+    Rel(backend_1, mysql, "Lê/Escreve dados", "JDBC")
+    Rel(backend_2, mysql, "Lê/Escreve dados", "JDBC")
+    Rel(backend_1, redis, "Cache", "Redis Protocol")
+    Rel(backend_2, redis, "Cache", "Redis Protocol")
+    
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="2")
+```
+
+> 📘 **C4 Model**: Diagrama de Containers mostrando os principais componentes executáveis e suas interações
+
+### Arquitetura Simplificada
 
 ```mermaid
 graph TB
-    Client[👤 Cliente Browser]
+    User([👤 Cliente Browser])
+    NginxFE[Nginx Frontend<br/>:80<br/>Serve Angular + Proxy]
+    NginxAPI[Nginx API Gateway<br/>:8082/8081/8083<br/>Load Balancer]
     
-    subgraph Frontend["🌐 Nginx Frontend :80"]
-        FE[Serve Angular<br/>Proxy APIs]
+    subgraph Backend["Backend Layer - 2 Instances"]
+        B1[Backend Instance 1<br/>:8080]
+        B2[Backend Instance 2<br/>:8080]
     end
     
-    subgraph APIGateways["🔀 API Gateways"]
-        GW1[nginx-api-spring<br/>:8082]
-        GW2[nginx-api-quarkus<br/>:8081]
-        GW3[nginx-api-micronaut<br/>:8083]
+    subgraph DataLayer["Data Layer"]
+        DB[(MySQL<br/>:3306<br/>Persistent Data)]
+        Cache[(Redis<br/>:6379<br/>Cache)]
     end
     
-    subgraph Backends["☕ Backend Instances"]
-        SP1[Spring Boot 1]
-        SP2[Spring Boot 2]
-        QK1[Quarkus 1]
-        QK2[Quarkus 2]
-        MN1[Micronaut 1]
-        MN2[Micronaut 2]
-    end
+    User -->|HTTP/HTTPS| NginxFE
+    NginxFE -->|/api/*| NginxAPI
+    NginxAPI -.Round Robin.-> B1
+    NginxAPI -.Round Robin.-> B2
+    B1 & B2 -->|JDBC| DB
+    B1 & B2 -->|Cache| Cache
     
-    subgraph Data["💾 Dados Compartilhados"]
-        DB[(MySQL<br/>:3306)]
-        Cache[(Redis<br/>:6379)]
-    end
-    
-    Client --> FE
-    FE -->|/api/spring/*| GW1
-    FE -->|/api/quarkus/*| GW2
-    FE -->|/api/micronaut/*| GW3
-    
-    GW1 -.Load Balance.-> SP1
-    GW1 -.Load Balance.-> SP2
-    GW2 -.Load Balance.-> QK1
-    GW2 -.Load Balance.-> QK2
-    GW3 -.Load Balance.-> MN1
-    GW3 -.Load Balance.-> MN2
-    
-    SP1 & SP2 & QK1 & QK2 & MN1 & MN2 --> DB
-    SP1 & SP2 & QK1 & QK2 & MN1 & MN2 --> Cache
-    
-    style Frontend fill:#E3F2FD
-    style APIGateways fill:#C8E6C9
-    style Backends fill:#FFF9C4
-    style Data fill:#F3E5F5
+    style NginxFE fill:none,stroke:#1976D2,stroke-width:2px
+    style NginxAPI fill:none,stroke:#388E3C,stroke-width:2px
+    style Backend fill:none,stroke:#F57C00,stroke-width:2px,stroke-dasharray: 5 5
+    style DataLayer fill:none,stroke:#7B1FA2,stroke-width:2px,stroke-dasharray: 5 5
+    style B1 fill:none,stroke:#F57C00,stroke-width:2px
+    style B2 fill:none,stroke:#F57C00,stroke-width:2px
 ```
 
-### Arquitetura Modular (Docker Compose)
+## 📚 Documentação por Backend
 
-```mermaid
-graph LR
-    subgraph Base["📦 docker-compose.yml<br/>(Base - Sempre Ativo)"]
-        MySQL[(MySQL)]
-        Redis[(Redis)]
-        Frontend[Nginx Frontend]
-    end
-    
-    subgraph Spring["☕ docker-compose.spring.yml<br/>(Opcional)"]
-        SpringGW[nginx-api-spring]
-        Spring1[Spring Boot 1]
-        Spring2[Spring Boot 2]
-    end
-    
-    subgraph Quarkus["⚡ docker-compose.quarkus.yml<br/>(Opcional)"]
-        QuarkusGW[nginx-api-quarkus]
-        Quarkus1[Quarkus 1]
-        Quarkus2[Quarkus 2]
-    end
-    
-    subgraph Micronaut["🔥 docker-compose.micronaut.yml<br/>(Opcional)"]
-        MicronautGW[nginx-api-micronaut]
-        Micronaut1[Micronaut 1]
-        Micronaut2[Micronaut 2]
-    end
-    
-    Frontend -.-> SpringGW
-    Frontend -.-> QuarkusGW
-    Frontend -.-> MicronautGW
-    
-    SpringGW --> Spring1 & Spring2
-    QuarkusGW --> Quarkus1 & Quarkus2
-    MicronautGW --> Micronaut1 & Micronaut2
-    
-    Spring1 & Spring2 --> MySQL & Redis
-    Quarkus1 & Quarkus2 --> MySQL & Redis
-    Micronaut1 & Micronaut2 --> MySQL & Redis
-    
-    style Base fill:#E3F2FD
-    style Spring fill:#C8E6C9
-    style Quarkus fill:#F8BBD0
-    style Micronaut fill:#E1BEE7
-```
+### Comparação de Componentes
 
-### Cenário: Apenas Spring Boot
+| Tipo | Componente | Startup Time | Memory Usage | Web Server | Documentação |
+|------|------------|--------------|--------------|------------|--------------|
+| Backend | **☕ Spring Boot** | ~2.5-4s | ~720-830 MB | Undertow | **[📖 README-spring-boot.md](README-spring-boot.md)** |
+| Backend | **⚡ Quarkus** | ~1.158s ⚡ | ~580-670 MB | Eclipse Vert.x | **[📖 README-quarkus.md](README-quarkus.md)** |
+| Backend | **🔥 Micronaut** | ~3-5s | ~495-515 MB 🏆 | Netty | **[📖 README-micronaut.md](README-micronaut.md)** |
+| Frontend | **🎨 Angular** | N/A | ~5 MB | Nginx (static) | **[📖 README-frontend.md](README-frontend.md)** |
 
-```mermaid
-graph TB
-    Client[👤 Cliente]
-    Frontend[🌐 Nginx Frontend<br/>:80]
-    SpringGW[🔀 nginx-api-spring<br/>:8082]
-    
-    subgraph SpringCluster["Spring Boot Cluster"]
-        SP1[Spring Boot 1<br/>:8080]
-        SP2[Spring Boot 2<br/>:8080]
-    end
-    
-    DB[(MySQL<br/>:3306)]
-    Cache[(Redis<br/>:6379)]
-    
-    Client --> Frontend
-    Frontend -->|/api/spring/*| SpringGW
-    SpringGW -.Round Robin.-> SP1
-    SpringGW -.Round Robin.-> SP2
-    SP1 & SP2 --> DB & Cache
-    
-    Note[💡 Apenas 6 containers<br/>Economia: ~55% recursos]
-    
-    style Frontend fill:#E3F2FD
-    style SpringGW fill:#C8E6C9
-    style SpringCluster fill:#FFF9C4
-    style Note fill:#FFECB3
-```
+> 🏆 **Micronaut**: Melhor eficiência de memória  
+> ⚡ **Quarkus**: Startup mais rápido  
+> ☕ **Spring Boot**: Ecossistema mais maduro
 
-## 🎨 Setup do Frontend (IMPORTANTE!)
 
-⚠️ **O frontend precisa ser construído antes de iniciar a infraestrutura!**
+⚠️ **Frontend**: Build necessário antes de iniciar! Use `./build-frontend.sh`
 
-```bash
-# Opção 1: Script automático (recomendado)
-./build-frontend.sh
+## 🌐 Nginx Architecture
 
-# Opção 2: Build manual
-cd ../frontend-angular
-npm run build --prod
-cp -r dist/* ../docker-infrastructure/frontend/dist/
-```
+A infraestrutura utiliza **arquitetura dual Nginx**:
+- **Nginx Frontend** (port 80): Serve Angular + Proxy APIs
+- **Nginx API Gateway** (ports 8081/8082/8083): Load balancer por backend
 
-Para desenvolvimento ativo do frontend, veja [frontend/README.md](frontend/README.md).
-
-## 🌐 Arquitetura Dual Nginx
-
-A infraestrutura utiliza **dois Nginx separados** para melhor separação de responsabilidades:
-
-### 1. Nginx Frontend (Port 80)
-- ✅ Serve arquivos estáticos do Angular
-- ✅ Proxy `/api/*` para API Gateway
-- ✅ Cache otimizado para frontend
-- ✅ Container: `restaurant-nginx-frontend`
-
-### 2. Nginx API Gateway (Port 8080)
-- ✅ Load balancer para backends
-- ✅ Roteamento de APIs
-- ✅ CORS e headers
-- ✅ Container: `restaurant-nginx-api`
-
-**Benefícios**: Escalabilidade independente, configurações otimizadas, melhor segurança.
-
-📚 Documentação completa: [nginx/README.md](nginx/README.md)
+📚 **Documentação completa**: [nginx/README.md](nginx/README.md)
 
 ## 🚀 Como Usar
 
