@@ -52,6 +52,22 @@ Esta infraestrutura fornece:
 └─────────────────────────────────┘
 ```
 
+## 🎨 Setup do Frontend (IMPORTANTE!)
+
+⚠️ **O frontend precisa ser construído antes de iniciar a infraestrutura!**
+
+```bash
+# Opção 1: Script automático (recomendado)
+./build-frontend.sh
+
+# Opção 2: Build manual
+cd ../frontend-angular
+npm run build --prod
+cp -r dist/* ../docker-infrastructure/frontend/dist/
+```
+
+Para desenvolvimento ativo do frontend, veja [frontend/README.md](frontend/README.md).
+
 ## 🚀 Como Usar
 
 ### 1. Iniciar TODOS os Backends (6 instâncias)
